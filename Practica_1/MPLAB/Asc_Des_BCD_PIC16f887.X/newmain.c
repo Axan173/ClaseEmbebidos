@@ -15,12 +15,12 @@
     // Hacer que todas las entradas sean digitales y no analogas    
     asm("BSF STATUS, 0x5");
     asm("BSF STATUS, 0x6");
-    asm("CLRF ANSEL"); //TRISC todo en ceros para que PORTC sea salida
+    asm("CLRF ANSEL"); //Se tiene que borrar ANSEL para que las entradas sean digitales y no analogas
         
     asm("BSF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
     asm("MOVLW 0xFF");
-    asm(" MOVWF 0x189"); //TRISA todo en 1's para que PORTA sean entradas
+    asm(" MOVWF 0x189"); //TRISE todo en 1's para que PORTE sean entradas
     asm("CLRF 0x187"); //TRISC todo en ceros para que PORTC sea salida
     
     // Siguientes 4 lineas: Inicializar el valor del puerto C con un 0x9
@@ -32,6 +32,11 @@
     asm("REPETIR_Ciclo: BCF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
     
+    
+    asm(" RRF 0x109, 0"); // Rotar el bit 1 de PORTE, para que sea bit 0
+    asm(" ANDLW 0x1"); // AND de PORTE bit 0 con valor 0x1
+    asm(" BTFSS 0x103, 0x2");
+    asm(" GOTO REPETIR_Ciclo");  
     asm(" MOVLW 0x1"); // Cuando sea PORTE.b0=1 es ASC, cuando sea PORTE.b0=0 es DESC
     asm(" ANDWF 0x109, 0"); // AND de PORTE con 0x1 que esta en W
     asm(" BTFSS 0x103, 0x2");
