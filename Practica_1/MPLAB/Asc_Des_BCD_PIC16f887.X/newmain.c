@@ -11,41 +11,62 @@
 
 //Paso 4
     void main(void) {
+    
+    // Hacer que todas las entradas sean digitales y no analogas    
+    asm("BSF STATUS, 0x5");
+    asm("BSF STATUS, 0x6");
+    asm("CLRF ANSEL"); //TRISC todo en ceros para que PORTC sea salida
         
     asm("BSF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
     asm("MOVLW 0xFF");
-    asm(" MOVWF 0x185");
+    asm(" MOVWF 0x189"); //TRISA todo en 1's para que PORTA sean entradas
+    asm("CLRF 0x187"); //TRISC todo en ceros para que PORTC sea salida
     
-    
-        
-    
-    asm("BSF STATUS, 0x5");
+    // Siguientes 4 lineas: Inicializar el valor del puerto C con un 0x9
+    asm("BCF STATUS, 0x5"); 
     asm("BCF STATUS, 0x6");
-    asm("CLRF 0x187");
-    
-    asm("BCF STATUS, 0x5");
-    asm("BCF STATUS, 0x6");
-    
     asm(" MOVLW 0x9");
     asm(" MOVWF 0x107");
     
     asm("REPETIR_Ciclo: BCF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
     
-    asm(" MOVLW 0x9");
+    asm(" MOVLW 0x1"); // Cuando sea PORTE.b0=1 es ASC, cuando sea PORTE.b0=0 es DESC
+    asm(" ANDWF 0x109, 0"); // AND de PORTE con 0x1 que esta en W
+    asm(" BTFSS 0x103, 0x2");
+    asm(" GOTO DESCENDENTE");    
+    asm(" GOTO ASCENDENTE");
+    
+    
+    asm(" ASCENDENTE: MOVLW 0x9");
     asm(" SUBWF 0x107, 0");
     asm(" BTFSS 0x103, 0x2");
-    asm(" GOTO CASO01");    
-    asm(" GOTO CASO00");
+    asm(" GOTO CASO01_ASC");    
+    asm(" GOTO CASO00_ASC");
     
-    //asm("CASO00: INCF 0x107, 1");
-    asm(" CASO00: MOVLW 0x0");
+    //asm("CASO00_ASC: INCF 0x107, 1");
+    asm(" CASO00_ASC: MOVLW 0x0");
     asm(" MOVWF 0x107");
     asm(" GOTO DELAY");
     
-    asm("CASO01: INCF 0x107, 1");
+    asm("CASO01_ASC: INCF 0x107, 1");
     asm(" GOTO DELAY");
+    
+    
+    asm(" DESCENDENTE: MOVF 0x107, 0");//Tomar EL registro C y poner el contenido en W 
+    asm(" BTFSS 0x103, 0x2");
+    asm(" GOTO CASO01_DESC");    
+    asm(" GOTO CASO00_DESC");
+    
+    //asm("CASO00: INCF 0x107, 1");
+    asm(" CASO00_DESC: MOVLW 0x9");
+    asm(" MOVWF 0x107");
+    asm(" GOTO DELAY");
+    
+    asm("CASO01_DESC: DECF 0x107, 1");
+    asm(" GOTO DELAY");
+    
     
     //delay starts
     asm("DELAY: MOVLW 0x02");
@@ -57,9 +78,7 @@
     asm("RESTAALTA2: DECFSZ 0xD, 1");
     asm("GOTO RESTA2");
     // delay ends
-    
-    //go back to rotate a bit
-    //asm("GOTO REPETIR_Ciclo");    
+     
         
     //////////////////////////////////////////////////////////////////    
         
@@ -72,7 +91,6 @@
     //mivar1
     asm("BCF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
-    //asm(" MOVLW 0x8"); // MOVER AQUI PARA SELECCIONAR
     asm("MOVF 0x107, 0");//Tomar EL registro C y poner el contenido en W
     asm(" BCF STATUS, 0x5");
     asm(" MOVWF 0x121");
