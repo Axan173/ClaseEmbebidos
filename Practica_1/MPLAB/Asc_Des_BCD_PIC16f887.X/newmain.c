@@ -77,7 +77,7 @@
     
     //asm("CASO00: INCF 0x107, 1");
     asm(" CASO00_DESC: MOVLW 0x9");
-    asm(" MOVWF STATUS");
+    asm(" MOVWF PORTC");
     asm(" GOTO MY_BCD");
     
     asm("CASO01_DESC: DECF PORTC, 1");
