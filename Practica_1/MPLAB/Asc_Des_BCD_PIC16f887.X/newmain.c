@@ -32,6 +32,17 @@
     asm("REPETIR_Ciclo: BCF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
     
+        //delay starts
+    asm("DELAY: MOVLW 0x02");
+    asm("MOVWF 0x10D");
+    asm("MOVLW 0xF4");
+    asm("MOVWF 0x10C");	
+    asm("RESTA2: DECFSZ 0x10C, 1");
+    asm("GOTO RESTA2");
+    asm("RESTAALTA2: DECFSZ 0xD, 1");
+    asm("GOTO RESTA2");
+    // delay ends
+    
     
     asm(" RRF 0x109, 0"); // Rotar el bit 1 de PORTE, para que sea bit 0
     asm(" ANDLW 0x1"); // AND de PORTE bit 0 con valor 0x1
@@ -53,10 +64,10 @@
     //asm("CASO00_ASC: INCF 0x107, 1");
     asm(" CASO00_ASC: MOVLW 0x0");
     asm(" MOVWF 0x107");
-    asm(" GOTO DELAY");
+    asm(" GOTO MY_BCD");
     
     asm("CASO01_ASC: INCF 0x107, 1");
-    asm(" GOTO DELAY");
+    asm(" GOTO MY_BCD");
     
     
     asm(" DESCENDENTE: MOVF 0x107, 0");//Tomar EL registro C y poner el contenido en W 
@@ -67,28 +78,16 @@
     //asm("CASO00: INCF 0x107, 1");
     asm(" CASO00_DESC: MOVLW 0x9");
     asm(" MOVWF 0x107");
-    asm(" GOTO DELAY");
+    asm(" GOTO MY_BCD");
     
     asm("CASO01_DESC: DECF 0x107, 1");
-    asm(" GOTO DELAY");
-    
-    
-    //delay starts
-    asm("DELAY: MOVLW 0x02");
-    asm("MOVWF 0x10D");
-    asm("MOVLW 0xF4");
-    asm("MOVWF 0x10C");	
-    asm("RESTA2: DECFSZ 0x10C, 1");
-    asm("GOTO RESTA2");
-    asm("RESTAALTA2: DECFSZ 0xD, 1");
-    asm("GOTO RESTA2");
-    // delay ends
+    asm(" GOTO MY_BCD");
      
         
     //////////////////////////////////////////////////////////////////    
         
     //Todos los pines de B a salida
-    asm("BSF STATUS, 0x5");
+    asm("MY_BCD:BSF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
     //Limpia todo el puerto B
     asm("CLRF 0x186");
