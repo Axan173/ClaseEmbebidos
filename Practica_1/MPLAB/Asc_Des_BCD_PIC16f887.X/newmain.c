@@ -11,6 +11,14 @@
 
 //Paso 4
     void main(void) {
+        
+    asm("BSF STATUS, 0x5");
+    asm("BCF STATUS, 0x6");
+    asm("MOVLW 0xFF");
+    asm(" MOVWF 0x185");
+    
+    
+        
     
     asm("BSF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
@@ -25,17 +33,18 @@
     asm("REPETIR_Ciclo: BCF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
     
-    asm("MOVF 0x107, 0");//Tomar EL registro C y poner el contenido en W
+    asm(" MOVLW 0x9");
+    asm(" SUBWF 0x107, 0");
     asm(" BTFSS 0x103, 0x2");
-    asm(" GOTO CASO01");
+    asm(" GOTO CASO01");    
     asm(" GOTO CASO00");
     
     //asm("CASO00: INCF 0x107, 1");
-    asm(" CASO00: MOVLW 0x9");
+    asm(" CASO00: MOVLW 0x0");
     asm(" MOVWF 0x107");
     asm(" GOTO DELAY");
     
-    asm("CASO01: DECF 0x107, 1");
+    asm("CASO01: INCF 0x107, 1");
     asm(" GOTO DELAY");
     
     //delay starts
