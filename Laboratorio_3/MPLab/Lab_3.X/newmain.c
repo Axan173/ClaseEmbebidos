@@ -12,7 +12,7 @@ void delay1s(void);
 
 void main(void)
 {
-    OSCCON = 0x31;
+    OSCCON = 0x51;
     while (1){
         TRISC  = 0x00;
         PORTC = 0x01;
@@ -24,15 +24,13 @@ void main(void)
     }
 }
 
-
-void delay1s (void)
+void delay1s (void)     
 {
-    asm("MOVLW 0xA1");
-    asm("MOVWF 0x71");
-    asm("MOVLW 0x02");
-    asm("MOVWF 0x70");	
-    asm("RESTA2: DECFSZ 0x70, 1");
-    asm("GOTO RESTA2");
-    asm("RESTAALTA2: DECFSZ 0x71, 1");
-    asm("GOTO RESTA2");
+    
+
+    long start = 0;
+    long end = 3435; // Esto es .25 Para 59 lineas de ensamblador 
+    //Calibrar simepre xDDDDDD
+
+    for (long i = start; i <= end; i++);
 }
