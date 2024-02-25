@@ -1,16 +1,17 @@
+//Alan Sanchez --- BCD Con ASCENDENTE Y DESCENDENTE + BOTON DE PARO
 #pragma config FOSC = XT
 #pragma config WDTE = OFF
 #pragma config PWRTE = OFF
 #pragma config CP = OFF 
+#pragma config LVP = OFF
 
-//Paso 2
+
 #include <xc.h>
 
-//Paso 3
 #define _XTAL_FREQ 4000000
 
-//Paso 4
     void main(void) {
+    OSCCON = 0x51;
     
     // Hacer que todas las entradas sean digitales y no analogas    
     asm("BSF STATUS, 0x5");
@@ -32,14 +33,14 @@
     asm("REPETIR_Ciclo: BCF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
     
-        //delay starts
-    asm("DELAY: MOVLW 0x02");
-    asm("MOVWF 0x10D");
-    asm("MOVLW 0xF4");
-    asm("MOVWF 0x10C");	
-    asm("RESTA2: DECFSZ 0x10C, 1");
+    //delay starts
+    asm("DELAY: MOVLW 0xD6");
+    asm("MOVWF 0x21");
+    asm("MOVLW 0xB0");
+    asm("MOVWF 0x20");	
+    asm("RESTA2: DECFSZ 0x20, 1");
     asm("GOTO RESTA2");
-    asm("RESTAALTA2: DECFSZ 0xD, 1");
+    asm("RESTAALTA2: DECFSZ 0x21, 1");
     asm("GOTO RESTA2");
     // delay ends
     
@@ -89,8 +90,7 @@
     //Todos los pines de B a salida
     asm("MY_BCD:BSF STATUS, 0x5");
     asm("BCF STATUS, 0x6");
-    //Limpia todo el puerto B
-    asm("CLRF TRISB");
+    asm("CLRF TRISD");
     
     //mivar1
     asm("BCF STATUS, 0x5");
@@ -109,7 +109,7 @@
     asm(" GOTO ASIGNAR0");
     
     asm(" ASIGNAR0: MOVLW 0x7E");
-    asm(" MOVWF PORTB");
+    asm(" MOVWF PORTD");
     asm(" GOTO REPETIR_Ciclo");
     
     //if 1
@@ -119,7 +119,7 @@
     asm(" GOTO ASIGNAR1");
     
     asm(" ASIGNAR1: MOVLW 0x30");
-    asm(" MOVWF PORTB");
+    asm(" MOVWF PORTD");
     asm(" GOTO REPETIR_Ciclo");
     
     
@@ -131,7 +131,7 @@
     asm(" GOTO ASIGNAR2");
     
     asm(" ASIGNAR2: MOVLW 0x6D");
-    asm(" MOVWF PORTB");
+    asm(" MOVWF PORTD");
     asm(" GOTO REPETIR_Ciclo");
 
     //if 3
@@ -142,7 +142,7 @@
     asm(" GOTO ASIGNAR3");
     
     asm(" ASIGNAR3: MOVLW 0x79");
-    asm(" MOVWF PORTB");
+    asm(" MOVWF PORTD");
     asm(" GOTO REPETIR_Ciclo");
 
     //if 4
@@ -153,7 +153,7 @@
     asm(" GOTO ASIGNAR4");
     
     asm(" ASIGNAR4: MOVLW 0x33");
-    asm(" MOVWF PORTB");
+    asm(" MOVWF PORTD");
     asm(" GOTO REPETIR_Ciclo");
 
     //if 5
@@ -164,7 +164,7 @@
     asm(" GOTO ASIGNAR5");
     
     asm(" ASIGNAR5: MOVLW 0x5B");
-    asm(" MOVWF PORTB");
+    asm(" MOVWF PORTD");
     asm(" GOTO REPETIR_Ciclo");
         
     //if 6 //////////////
@@ -175,7 +175,7 @@
     asm(" GOTO ASIGNAR6");
     
     asm(" ASIGNAR6: MOVLW 0x5F");
-    asm(" MOVWF PORTB");
+    asm(" MOVWF PORTD");
     asm(" GOTO REPETIR_Ciclo");
     
     
@@ -187,7 +187,7 @@
     asm(" GOTO ASIGNAR7");
     
     asm(" ASIGNAR7: MOVLW 0x70");
-    asm(" MOVWF PORTB");
+    asm(" MOVWF PORTD");
     asm(" GOTO REPETIR_Ciclo");
     
    //if 8
@@ -198,7 +198,7 @@
     asm(" GOTO ASIGNAR8");
     
     asm(" ASIGNAR8: MOVLW 0x7F");
-    asm(" MOVWF PORTB");
+    asm(" MOVWF PORTD");
     asm(" GOTO REPETIR_Ciclo");
     
     //if 9
@@ -209,7 +209,7 @@
     asm(" GOTO ASIGNAR9");
     
     asm(" ASIGNAR9: MOVLW 0x73");
-    asm(" MOVWF PORTB");
+    asm(" MOVWF PORTD");
     asm(" GOTO REPETIR_Ciclo");
     
     
