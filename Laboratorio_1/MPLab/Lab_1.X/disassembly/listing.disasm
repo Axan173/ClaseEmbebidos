@@ -1,0 +1,41 @@
+Disassembly Listing for Lab_1
+Generated From:
+C:/gitRepos/ClaseEmbebidos/Laboratorio_1/MPLab/Lab_1.X/dist/default/debug/Lab_1.X.debug.elf
+19/02/2024 07:48:09 PM
+
+---  C:/gitRepos/ClaseEmbebidos/Laboratorio_1/MPLab/Lab_1.X/newmain.c  ----------------------------------
+1:             // Alan Sanchez
+2:             #pragma config FOSC = XT
+3:             #pragma config WDTE = OFF
+4:             #pragma config PWRTE = OFF
+5:             #pragma config CP = OFF 
+6:             
+7:             #include <xc.h>
+8:             
+9:             #define _XTAL_FREQ 4000000
+10:            
+11:            void main(void)
+12:            {
+13:                OSCCON = 0x67;
+07ED  3067     MOVLW 0x67
+07EE  1683     BSF STATUS, 0x5
+07EF  1303     BCF STATUS, 0x6
+07F0  008F     MOVWF OSCCON
+14:                while (1){
+15:                    TRISB  = 0x00;
+07F1  1683     BSF STATUS, 0x5
+07F2  1303     BCF STATUS, 0x6
+07F3  0186     CLRF TRISB
+16:                    PORTB = 0x55;
+07F4  3055     MOVLW 0x55
+07F5  1283     BCF STATUS, 0x5
+07F6  1303     BCF STATUS, 0x6
+07F7  0086     MOVWF PORTB
+07F8  2FF1     GOTO 0x7F1
+07F9  120A     BCF PCLATH, 0x4
+07FA  118A     BCF PCLATH, 0x3
+17:                }
+18:            }
+---  C:/Users/alan1/AppData/Local/Temp/xcAsffc/driver_tmp_1.s  ------------------------------------------
+07FC  0183     CLRF STATUS
+07FD  120A     BCF PCLATH, 0x4
