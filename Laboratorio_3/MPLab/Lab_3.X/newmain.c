@@ -3,6 +3,8 @@
 #pragma config WDTE = OFF
 #pragma config PWRTE = OFF
 #pragma config CP = OFF 
+#pragma config LVP = OFF
+
 
 #include <xc.h>
 
@@ -31,6 +33,6 @@ void delay1s (void)
     long start = 0;
     long end = 3435; // Esto es .25 Para 59 lineas de ensamblador 
     //Calibrar simepre xDDDDDD
-
+    
     for (long i = start; i <= end; i++);
 }
