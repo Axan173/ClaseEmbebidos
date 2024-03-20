@@ -1,3 +1,4 @@
+unsigned int LaCuenta=0;
 unsigned char unidades; //Variable para las Unidades
 unsigned char decenas; //Variable para las Decenas
 unsigned char centenas; //Variable para las Centenas
@@ -69,40 +70,18 @@ void main ()
 
 void conteo_up()
 {
-    unidades++;
-    if (unidades == 10)
-    {
-        unidades = 0;
-        decenas++;
-        if (decenas == 10)
-        {
-            decenas = 0;
-            centenas++;
-            if (centenas == 10)
-            {
-                centenas = 0;
-            }
-        }
-    }
+    LaCuenta++;
+    centenas = (unsigned char) (LaCuenta / 100);
+    decenas = (unsigned char) ((LaCuenta % 100)/10);
+    unidades = (unsigned char) ((LaCuenta % 100)%10);
 }
 
 void conteo_down()
 {
-    unidades--;
-    if (unidades == 255)
-    {
-        unidades = 9;
-        decenas--;
-        if (decenas == 255)
-        {
-            decenas = 9;
-            centenas--;
-            if (centenas == 255)
-            {
-                centenas = 9;
-            }
-        }
-    }
+    LaCuenta --;
+    centenas = (unsigned char) (LaCuenta / 100);
+    decenas = (unsigned char) ((LaCuenta % 100)/10);
+    unidades = (unsigned char) ((LaCuenta % 100)%10);
 }
 
 void multiplexado(unsigned char veces)
