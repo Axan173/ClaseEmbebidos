@@ -18,6 +18,7 @@ void multiplexado(unsigned char veces);
 
 void main ()
 {
+    TRISA = 0X00;
     TRISC = 0x00;   // Configurando el Puerto "C" como Salida
     TRISD = 0x00;   // Configurando el Puerto "D" como Salida
     PORTD = 0xF0;
