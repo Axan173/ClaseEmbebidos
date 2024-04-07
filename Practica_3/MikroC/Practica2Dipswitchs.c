@@ -23,31 +23,31 @@ void main ()
     PORTD = 0xF0;
     OPTION_REG = OPTION_REG & 0x7F; // Activar "Weak Pull-up"
     ANSELH = 0x00;  // Configurado de Entradas Digitales en PORTE
-    PORTB = 0x07;   // Activar Pull-ups para los botones (incluyendo el botón de parada)
+    PORTB = 0x07;   // Activar Pull-ups para los botones (incluyendo el botï¿½n de parada)
 
     mostrar_valores_iniciales(200);
 
     while (1)
     {
-        if (PORTB & 0x01) // Botón en B0 presionado, detener conteo
+        if (PORTB & 0x01) // Botï¿½n en B0 presionado, detener conteo
         {
             stop = 1; // Detener el conteo
         }
-        else // Si B0 no está presionado
+        else // Si B0 no estï¿½ presionado
         {
-            if (PORTB & 0x02) // Botón en B1 presionado, selección ascendente
+            if (PORTB & 0x02) // Botï¿½n en B1 presionado, selecciï¿½n ascendente
             {
                 ascendente = 1;
                 stop = 0; // Reinicia la bandera de parada
             }
-            else // Botón B1 no presionado, selección descendente
+            else // Botï¿½n B1 no presionado, selecciï¿½n descendente
             {
                 ascendente = 0;
                 stop = 0; // Reinicia la bandera de parada
             }
         }
 
-        if (!stop && !(PORTB & 0x01)) // Si no se presiona el botón de parada y B0 no está seleccionado
+        if (!stop && !(PORTB & 0x01)) // Si no se presiona el botï¿½n de parada y B0 no estï¿½ seleccionado
         {
             if (ascendente)
             {
@@ -60,9 +60,9 @@ void main ()
 
             multiplexado(25);  // Multiplexado (1/4 segundo) y Paro
         }
-        else // Si se presiona el botón de parada o B0 está seleccionado
+        else // Si se presiona el botï¿½n de parada o B0 estï¿½ seleccionado
         {
-            multiplexado(1); // Muestra el número actual sin actualizar
+            multiplexado(1); // Muestra el nï¿½mero actual sin actualizar
 
         }
     }
@@ -70,7 +70,13 @@ void main ()
 
 void conteo_up()
 {
-    LaCuenta++;
+    if (LaCuenta<999)
+    {
+       LaCuenta++;
+    }else {
+       LaCuenta=0;
+    }
+       
     centenas = (unsigned char) (LaCuenta / 100);
     decenas = (unsigned char) ((LaCuenta % 100)/10);
     unidades = (unsigned char) ((LaCuenta % 100)%10);
@@ -78,7 +84,12 @@ void conteo_up()
 
 void conteo_down()
 {
-    LaCuenta --;
+    if (LaCuenta>0)
+    {
+       LaCuenta --;
+    }else {
+       LaCuenta=999;
+    }
     centenas = (unsigned char) (LaCuenta / 100);
     decenas = (unsigned char) ((LaCuenta % 100)/10);
     unidades = (unsigned char) ((LaCuenta % 100)%10);
@@ -90,7 +101,7 @@ void multiplexado(unsigned char veces)
     static unsigned char mostre_R = 0;
     
     PORTD.RD0 = 0;
-    PORTD.RD1 = 0; // Cátodos deshabilitados
+    PORTD.RD1 = 0; // Cï¿½todos deshabilitados
     PORTD = PORTD | 0xF0;
     
     if (mostre_S == 1){
@@ -102,26 +113,26 @@ void multiplexado(unsigned char veces)
         if(stop == 1)
         {
             mostre_S = 1;
-            PORTC = ~0x6E;   // Decodificación del dígito
-            PORTD.RD3 = 1;             // Activación del Cátodo del dígito
+            PORTC = ~0x6E;   // Decodificaciï¿½n del dï¿½gito
+            PORTD.RD3 = 1;             // Activaciï¿½n del Cï¿½todo del dï¿½gito
             delay_ms(5);
             PORTD.RD3 = 0;
         }
         else if(mostre_S==1) {
             mostre_R = 1;
-            PORTC = ~0x1F;   // Decodificación del dígito
+            PORTC = ~0x1F;   // Decodificaciï¿½n del dï¿½gito
             PORTD.RD4 = 0;
-            PORTD.RD3 = 1;   // Activación del Cátodo del dígito
+            PORTD.RD3 = 1;   // Activaciï¿½n del Cï¿½todo del dï¿½gito
             delay_ms(5);
             PORTD.RD3 = 0;
         }
         
         else if (ascendente == 1)
         {
-            PORTC = ~0x00;   // Decodificación del dígito
+            PORTC = ~0x00;   // Decodificaciï¿½n del dï¿½gito
             PORTD.RD4 = 0;
             PORTD.RD5 = 0;
-            PORTD.RD3 = 1;             // Activación del Cátodo del dígito
+            PORTD.RD3 = 1;             // Activaciï¿½n del Cï¿½todo del dï¿½gito
             delay_ms(5);
             PORTD.RD3 = 0;
             mostre_S = 0;
@@ -129,10 +140,10 @@ void multiplexado(unsigned char veces)
         
         else if (ascendente == 0)
         {
-            PORTC = ~0x00;   // Decodificación del dígito
+            PORTC = ~0x00;   // Decodificaciï¿½n del dï¿½gito
             PORTD.RD6 = 0;
             PORTD.RD7 = 0;
-            PORTD.RD3 = 1;             // Activación del Cátodo del dígito
+            PORTD.RD3 = 1;             // Activaciï¿½n del Cï¿½todo del dï¿½gito
             delay_ms(5);
             PORTD.RD3 = 0;
             mostre_S = 0;
@@ -140,25 +151,25 @@ void multiplexado(unsigned char veces)
         
         else
         {
-            PORTC = ~0x00;   // Decodificación del dígito
-            PORTD.RD3 = 1;             // Activación del Cátodo del dígito
+            PORTC = ~0x00;   // Decodificaciï¿½n del dï¿½gito
+            PORTD.RD3 = 1;             // Activaciï¿½n del Cï¿½todo del dï¿½gito
             delay_ms(5);
             PORTD.RD3 = 0;
         }
         
         PORTD = PORTD | 0xF0;
-        PORTC = ~TABLA[unidades];  // Decodificación de las unidades
-        PORTD.RD1 = 1;             // Activación del Cátodo de las unidades
+        PORTC = ~TABLA[unidades];  // Decodificaciï¿½n de las unidades
+        PORTD.RD1 = 1;             // Activaciï¿½n del Cï¿½todo de las unidades
         delay_ms(5);               // Retardo 5 milisegundos
         PORTD.RD1 = 0;
 
-        PORTC = ~TABLA[decenas];   // Decodificación de las decenas
-        PORTD.RD0 = 1;             // Activación del Cátodo de las decenas
+        PORTC = ~TABLA[decenas];   // Decodificaciï¿½n de las decenas
+        PORTD.RD0 = 1;             // Activaciï¿½n del Cï¿½todo de las decenas
         delay_ms(5);
         PORTD.RD0 = 0;
 
-        PORTC = ~TABLA[centenas];  // Decodificación de las centenas
-        PORTD.RD2 = 1;             // Activación del Cátodo de las centenas
+        PORTC = ~TABLA[centenas];  // Decodificaciï¿½n de las centenas
+        PORTD.RD2 = 1;             // Activaciï¿½n del Cï¿½todo de las centenas
         delay_ms(5);
         PORTD.RD2 = 0;
 
@@ -180,27 +191,27 @@ void mostrar_valores_iniciales(unsigned char veces)
     PORTD.RD0 = 0;
     PORTD.RD1 = 0;
     PORTD.RD2 = 0;
-    PORTD.RD3 = 0; // Cátodos deshabilitados
+    PORTD.RD3 = 0; // Cï¿½todos deshabilitados
 
     while (veces)
     {
-        PORTC = ~0x5F;  // Decodificación de las unidades   5F
-        PORTD.RD1 = 1;             // Activación del Cátodo de las unidades
+        PORTC = ~0x5F;  // Decodificaciï¿½n de las unidades   5F
+        PORTD.RD1 = 1;             // Activaciï¿½n del Cï¿½todo de las unidades
         delay_ms(5);               // Retardo 5 milisegundos
         PORTD.RD1 = 0;
 
-        PORTC = ~0x34;   // Decodificación de las decenas
-        PORTD.RD0 = 1;             // Activación del Cátodo de las decenas
+        PORTC = ~0x34;   // Decodificaciï¿½n de las decenas
+        PORTD.RD0 = 1;             // Activaciï¿½n del Cï¿½todo de las decenas
         delay_ms(5);
         PORTD.RD0 = 0;
 
-        PORTC = ~0x77;  // Decodificación de las centenas
-        PORTD.RD2 = 1;             // Activación del Cátodo de las centenas
+        PORTC = ~0x77;  // Decodificaciï¿½n de las centenas
+        PORTD.RD2 = 1;             // Activaciï¿½n del Cï¿½todo de las centenas
         delay_ms(5);
         PORTD.RD2 = 0;
 
-        PORTC = ~0x5D;   // Decodificación del dígito
-        PORTD.RD3 = 1;             // Activación del Cátodo del dígito
+        PORTC = ~0x5D;   // Decodificaciï¿½n del dï¿½gito
+        PORTD.RD3 = 1;             // Activaciï¿½n del Cï¿½todo del dï¿½gito
         delay_ms(5);
         PORTD.RD3 = 0;
         
@@ -211,23 +222,23 @@ void mostrar_valores_iniciales(unsigned char veces)
       
      while (veces)
     {
-        PORTC = ~Namearray[3+nameshifter];  // Decodificación de las unidades
-        PORTD.RD1 = 1;             // Activación del Cátodo de las unidades
+        PORTC = ~Namearray[3+nameshifter];  // Decodificaciï¿½n de las unidades
+        PORTD.RD1 = 1;             // Activaciï¿½n del Cï¿½todo de las unidades
         delay_ms(10);               // Retardo 5 milisegundos
         PORTD.RD1 = 0;
 
-        PORTC = ~Namearray[2+nameshifter];   // Decodificación de las decenas
-        PORTD.RD0 = 1;             // Activación del Cátodo de las decenas
+        PORTC = ~Namearray[2+nameshifter];   // Decodificaciï¿½n de las decenas
+        PORTD.RD0 = 1;             // Activaciï¿½n del Cï¿½todo de las decenas
         delay_ms(10);
         PORTD.RD0 = 0;
 
-        PORTC = ~Namearray[1+nameshifter];  // Decodificación de las centenas
-        PORTD.RD2 = 1;             // Activación del Cátodo de las centenas
+        PORTC = ~Namearray[1+nameshifter];  // Decodificaciï¿½n de las centenas
+        PORTD.RD2 = 1;             // Activaciï¿½n del Cï¿½todo de las centenas
         delay_ms(10);
         PORTD.RD2 = 0;
 
-        PORTC = ~Namearray[0+nameshifter];   // Decodificación del dígito
-        PORTD.RD3 = 1;             // Activación del Cátodo del dígito
+        PORTC = ~Namearray[0+nameshifter];   // Decodificaciï¿½n del dï¿½gito
+        PORTD.RD3 = 1;             // Activaciï¿½n del Cï¿½todo del dï¿½gito
         delay_ms(10);
         PORTD.RD3 = 0;
         
