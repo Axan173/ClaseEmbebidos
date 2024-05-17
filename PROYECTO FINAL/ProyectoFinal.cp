@@ -16,24 +16,24 @@ void StepperMotorControl (int direcciongiro)
  PORTD &= 0xF0;
  PORTD |= 0b1001;
  break;
- case 1:
+ case 3:
  PORTD &= 0xF0;
  PORTD |= 0b0011;
  break;
- case 2:
+ case 6:
  PORTD &= 0xF0;
  PORTD |= 0b0110;
  break;
- case 3:
+ case 9:
  PORTD &= 0xF0;
  PORTD |= 0b1100;
  estadodesecuencia = 0;
  break;
  default:
- estadodesecuencia = 0;
  break;
  }
- estadodesecuencia++;
+
+ estadodesecuencia +=1;
 }
 
 void inittask (void)
@@ -45,7 +45,8 @@ void inittask (void)
 
 void task1ms (void)
 {
-
+ PORTD.RD5 = ~PORTD.RD5;
+ StepperMotorControl(0);
 
 
 
@@ -63,11 +64,11 @@ void task10ms (void)
 
 void task100ms (void)
 {
- PORTD.RD5 = ~PORTD.RD5;
- StepperMotorControl(0);
+
+
 
 }
-#line 89 "C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c"
+#line 90 "C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c"
 void interrupt()
 {
 

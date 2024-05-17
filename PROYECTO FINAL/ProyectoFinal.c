@@ -30,24 +30,24 @@ void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
               PORTD &= 0xF0;
               PORTD |= 0b1001; // Paso 1
             break;
-            case 1:
+            case 3:
               PORTD &= 0xF0;
               PORTD |= 0b0011; // Paso 2
             break;
-            case 2:
+            case 6:
               PORTD &= 0xF0;
               PORTD |= 0b0110; // Paso 3
             break;
-            case 3:
+            case 9:
               PORTD &= 0xF0;
               PORTD |= 0b1100; // Paso 4
               estadodesecuencia = 0;
             break;
             default:
-              estadodesecuencia = 0;
             break;
      }
-     estadodesecuencia++;
+     
+     estadodesecuencia +=1;
 }
 
 void inittask (void)
@@ -60,6 +60,7 @@ void inittask (void)
 void  task1ms (void)
 {
       PORTD.RD5 = ~PORTD.RD5;
+      StepperMotorControl(0);
 
 
 
@@ -78,7 +79,7 @@ void  task10ms (void)
 void  task100ms (void)
 {
       //PORTD.RD5 = ~PORTD.RD5;
-      StepperMotorControl(0);
+
 
 }
 

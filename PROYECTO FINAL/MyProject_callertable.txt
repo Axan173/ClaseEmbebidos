@@ -3,9 +3,9 @@ main
 		____DoICP
 	inittask
 	task1ms
+		StepperMotorControl
 	task10ms
 	task100ms
-		StepperMotorControl
 interrupt
 	Div_16x16_S
 		Div_16x16_S_L
