@@ -2,6 +2,38 @@
 
 #define _XTAL_FREQ 4000000  //4MHz, which is default
 
+volatile static int Ostickcounter = 0;
+void  task1ms (void)
+{
+
+
+
+
+
+}
+
+
+
+
+
+
+
+void  task10ms (void)
+{
+
+
+
+}
+
+
+
+
+
+void  task100ms (void)
+{
+
+
+}
 
 //set the configuration bits: internal OSC, everything off except MCLR
 //#pragma config FOSC=INTRCIO, WDTE=OFF, PWRTE=OFF, MCLRE=ON, CP=OFF, \
@@ -21,6 +53,7 @@ void interrupt()
                                 //over
 
         PORTD.RD5 = ~PORTD.RD5; //Toggle the LED
+        Ostickcounter ++;
         myCount = 0;
     }
     else
@@ -66,8 +99,21 @@ int main()
     ///////////////////////
     while(1)
     {
-        //We can put any application code we want here. It will simply
-        //get interrupted when the timer expires.
+
+     if ((Ostickcounter %2)== 0) //cuenta 2 veces 500us = 1ms
+     {
+          task1ms();
+     }
+     else if ((Ostickcounter %20)==0) //cuenta 20 veces 500us = 10ms
+     {
+          task10ms();
+     }
+     else if ((Ostickcounter %200)==0)//cuenta 200 veces 500us = 100ms
+     {
+          task100ms();
+          Ostickcounter = 0;
+     }
+     else { }
     }
 
     return 0;

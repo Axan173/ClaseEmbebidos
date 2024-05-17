@@ -722,6 +722,9 @@ t2ckps0_bit
 t2ckps1
 t2ckps1_bit
 t2con
+task100ms
+task10ms
+task1ms
 tmr0
 tmr0ie
 tmr0ie_bit

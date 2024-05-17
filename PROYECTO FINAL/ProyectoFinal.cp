@@ -1,5 +1,41 @@
 #line 1 "C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c"
-#line 10 "C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c"
+
+
+
+
+volatile static int Ostickcounter = 0;
+void task1ms (void)
+{
+
+
+
+
+
+}
+
+
+
+
+
+
+
+void task10ms (void)
+{
+
+
+
+}
+
+
+
+
+
+void task100ms (void)
+{
+
+
+}
+#line 42 "C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c"
 void interrupt()
 {
 
@@ -14,6 +50,7 @@ void interrupt()
 
 
  PORTD.RD5 = ~PORTD.RD5;
+ Ostickcounter ++;
  myCount = 0;
  }
  else
@@ -60,7 +97,20 @@ int main()
  while(1)
  {
 
-
+ if ((Ostickcounter %2)== 0)
+ {
+ task1ms();
+ }
+ else if ((Ostickcounter %20)==0)
+ {
+ task10ms();
+ }
+ else if ((Ostickcounter %200)==0)
+ {
+ task100ms();
+ Ostickcounter = 0;
+ }
+ else { }
  }
 
  return 0;
