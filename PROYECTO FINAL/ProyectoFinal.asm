@@ -2,55 +2,57 @@
 _StepperMotorControl:
 
 ;ProyectoFinal.c,8 :: 		void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
-;ProyectoFinal.c,13 :: 		switch (estadodesecuencia){
+;ProyectoFinal.c,28 :: 		switch (estadodesecuencia){
 	GOTO       L_StepperMotorControl0
-;ProyectoFinal.c,14 :: 		case 0:
+;ProyectoFinal.c,29 :: 		case 0:
 L_StepperMotorControl2:
-;ProyectoFinal.c,15 :: 		PORTD = PORTD & 0xF0;
+;ProyectoFinal.c,30 :: 		PORTD &= 0xF0;
 	MOVLW      240
 	ANDWF      PORTD+0, 1
-;ProyectoFinal.c,16 :: 		PORTD = PORTD | 0b1001;
+;ProyectoFinal.c,31 :: 		PORTD |= 0b1001; // Paso 1
 	MOVLW      9
 	IORWF      PORTD+0, 1
-;ProyectoFinal.c,17 :: 		break;
+;ProyectoFinal.c,32 :: 		break;
 	GOTO       L_StepperMotorControl1
-;ProyectoFinal.c,18 :: 		case 1:
+;ProyectoFinal.c,33 :: 		case 1:
 L_StepperMotorControl3:
-;ProyectoFinal.c,19 :: 		PORTD = PORTD & 0xF0;
+;ProyectoFinal.c,34 :: 		PORTD &= 0xF0;
 	MOVLW      240
 	ANDWF      PORTD+0, 1
-;ProyectoFinal.c,20 :: 		PORTD = PORTD | 0b0011; // Paso 2
+;ProyectoFinal.c,35 :: 		PORTD |= 0b0011; // Paso 2
 	MOVLW      3
 	IORWF      PORTD+0, 1
-;ProyectoFinal.c,21 :: 		break;
+;ProyectoFinal.c,36 :: 		break;
 	GOTO       L_StepperMotorControl1
-;ProyectoFinal.c,22 :: 		case 2:
+;ProyectoFinal.c,37 :: 		case 2:
 L_StepperMotorControl4:
-;ProyectoFinal.c,23 :: 		PORTD = PORTD & 0xF0;
+;ProyectoFinal.c,38 :: 		PORTD &= 0xF0;
 	MOVLW      240
 	ANDWF      PORTD+0, 1
-;ProyectoFinal.c,24 :: 		PORTD = PORTD | 0b0110; // Paso 3
+;ProyectoFinal.c,39 :: 		PORTD |= 0b0110; // Paso 3
 	MOVLW      6
 	IORWF      PORTD+0, 1
-;ProyectoFinal.c,25 :: 		break;
+;ProyectoFinal.c,40 :: 		break;
 	GOTO       L_StepperMotorControl1
-;ProyectoFinal.c,26 :: 		case 3:
+;ProyectoFinal.c,41 :: 		case 3:
 L_StepperMotorControl5:
-;ProyectoFinal.c,27 :: 		PORTD = PORTD & 0xF0;
+;ProyectoFinal.c,42 :: 		PORTD &= 0xF0;
 	MOVLW      240
 	ANDWF      PORTD+0, 1
-;ProyectoFinal.c,28 :: 		PORTD = PORTD | 0b1100; // Paso 4
+;ProyectoFinal.c,43 :: 		PORTD |= 0b1100; // Paso 4
 	MOVLW      12
 	IORWF      PORTD+0, 1
-;ProyectoFinal.c,29 :: 		estadodesecuencia = 0;
+;ProyectoFinal.c,44 :: 		estadodesecuencia = 0;
 	CLRF       StepperMotorControl_estadodesecuencia_L0+0
-;ProyectoFinal.c,31 :: 		break;
+;ProyectoFinal.c,45 :: 		break;
 	GOTO       L_StepperMotorControl1
-;ProyectoFinal.c,32 :: 		default:
+;ProyectoFinal.c,46 :: 		default:
 L_StepperMotorControl6:
-;ProyectoFinal.c,34 :: 		break;
+;ProyectoFinal.c,47 :: 		estadodesecuencia = 0;
+	CLRF       StepperMotorControl_estadodesecuencia_L0+0
+;ProyectoFinal.c,48 :: 		break;
 	GOTO       L_StepperMotorControl1
-;ProyectoFinal.c,35 :: 		}
+;ProyectoFinal.c,49 :: 		}
 L_StepperMotorControl0:
 	MOVF       StepperMotorControl_estadodesecuencia_L0+0, 0
 	XORLW      0
@@ -70,46 +72,53 @@ L_StepperMotorControl0:
 	GOTO       L_StepperMotorControl5
 	GOTO       L_StepperMotorControl6
 L_StepperMotorControl1:
-;ProyectoFinal.c,36 :: 		}
+;ProyectoFinal.c,50 :: 		estadodesecuencia++;
+	INCF       StepperMotorControl_estadodesecuencia_L0+0, 1
+;ProyectoFinal.c,51 :: 		}
 L_end_StepperMotorControl:
 	RETURN
 ; end of _StepperMotorControl
 
 _inittask:
 
-;ProyectoFinal.c,38 :: 		void inittask (void)
-;ProyectoFinal.c,41 :: 		TRISD = TRISD & 0xF0; // Solo Los primeros 4 BITS 0 al 3 los otros se quedan en 0
+;ProyectoFinal.c,53 :: 		void inittask (void)
+;ProyectoFinal.c,56 :: 		TRISD = 0x00; // Solo Los primeros 4 BITS 0 al 3 los otros se quedan en 0
+	CLRF       TRISD+0
+;ProyectoFinal.c,57 :: 		PORTD &= 0xF0;        // Inicializar los 4 BITS a 0
 	MOVLW      240
-	ANDWF      TRISD+0, 1
-;ProyectoFinal.c,42 :: 		}
+	ANDWF      PORTD+0, 1
+;ProyectoFinal.c,58 :: 		}
 L_end_inittask:
 	RETURN
 ; end of _inittask
 
 _task1ms:
 
-;ProyectoFinal.c,44 :: 		void  task1ms (void)
-;ProyectoFinal.c,51 :: 		}
+;ProyectoFinal.c,60 :: 		void  task1ms (void)
+;ProyectoFinal.c,68 :: 		}
 L_end_task1ms:
 	RETURN
 ; end of _task1ms
 
 _task10ms:
 
-;ProyectoFinal.c,59 :: 		void  task10ms (void)
-;ProyectoFinal.c,61 :: 		StepperMotorControl(0);
-	CLRF       FARG_StepperMotorControl_direcciongiro+0
-	CLRF       FARG_StepperMotorControl_direcciongiro+1
-	CALL       _StepperMotorControl+0
-;ProyectoFinal.c,64 :: 		}
+;ProyectoFinal.c,70 :: 		void  task10ms (void)
+;ProyectoFinal.c,76 :: 		}
 L_end_task10ms:
 	RETURN
 ; end of _task10ms
 
 _task100ms:
 
-;ProyectoFinal.c,70 :: 		void  task100ms (void)
-;ProyectoFinal.c,74 :: 		}
+;ProyectoFinal.c,78 :: 		void  task100ms (void)
+;ProyectoFinal.c,80 :: 		PORTD.RD5 = ~PORTD.RD5;
+	MOVLW      32
+	XORWF      PORTD+0, 1
+;ProyectoFinal.c,81 :: 		StepperMotorControl(0);
+	CLRF       FARG_StepperMotorControl_direcciongiro+0
+	CLRF       FARG_StepperMotorControl_direcciongiro+1
+	CALL       _StepperMotorControl+0
+;ProyectoFinal.c,83 :: 		}
 L_end_task100ms:
 	RETURN
 ; end of _task100ms
@@ -123,8 +132,12 @@ _interrupt:
 	MOVWF      ___savePCLATH+0
 	CLRF       PCLATH+0
 
-;ProyectoFinal.c,80 :: 		void interrupt()
-;ProyectoFinal.c,85 :: 		if(myCount==8)
+;ProyectoFinal.c,89 :: 		void interrupt()
+;ProyectoFinal.c,96 :: 		INTCON.T0IF = 0;        //Clear the Timer 0 interrupt flag
+	BCF        INTCON+0, 2
+;ProyectoFinal.c,97 :: 		TMR0 = 0;               //Load a value of 0 into the timer
+	CLRF       TMR0+0
+;ProyectoFinal.c,102 :: 		if(myCount==8)
 	MOVLW      0
 	XORWF      interrupt_myCount_L0+1, 0
 	BTFSS      STATUS+0, 2
@@ -134,33 +147,85 @@ _interrupt:
 L__interrupt24:
 	BTFSS      STATUS+0, 2
 	GOTO       L_interrupt7
-;ProyectoFinal.c,87 :: 		INTCON.T0IF = 0;        //Clear the Timer 0 interrupt flag
-	BCF        INTCON+0, 2
-;ProyectoFinal.c,88 :: 		TMR0 = 0;               //Load a value of 0 into the timer
-	CLRF       TMR0+0
-;ProyectoFinal.c,93 :: 		PORTD.RD5 = ~PORTD.RD5; //Toggle the LED
-	MOVLW      32
-	XORWF      PORTD+0, 1
-;ProyectoFinal.c,94 :: 		Ostickcounter ++;
-	MOVF       ProyectoFinal_Ostickcounter+0, 0
+;ProyectoFinal.c,105 :: 		Ostickcounter++;
+	MOVF       interrupt_Ostickcounter_L0+0, 0
 	ADDLW      1
 	MOVWF      R0+0
 	MOVLW      0
 	BTFSC      STATUS+0, 0
 	ADDLW      1
-	ADDWF      ProyectoFinal_Ostickcounter+1, 0
+	ADDWF      interrupt_Ostickcounter_L0+1, 0
 	MOVWF      R0+1
 	MOVF       R0+0, 0
-	MOVWF      ProyectoFinal_Ostickcounter+0
+	MOVWF      interrupt_Ostickcounter_L0+0
 	MOVF       R0+1, 0
-	MOVWF      ProyectoFinal_Ostickcounter+1
-;ProyectoFinal.c,95 :: 		myCount = 0;
+	MOVWF      interrupt_Ostickcounter_L0+1
+;ProyectoFinal.c,106 :: 		myCount = 0;
 	CLRF       interrupt_myCount_L0+0
 	CLRF       interrupt_myCount_L0+1
-;ProyectoFinal.c,96 :: 		}
-	GOTO       L_interrupt8
+;ProyectoFinal.c,110 :: 		OSTaskEnable = OSTaskEnable | 0x1;
+	BSF        _OSTaskEnable+0, 0
+;ProyectoFinal.c,112 :: 		if ((Ostickcounter %10)==0) //cuenta 10 veces 1ms = 10ms
+	MOVLW      10
+	MOVWF      R4+0
+	MOVLW      0
+	MOVWF      R4+1
+	MOVF       interrupt_Ostickcounter_L0+0, 0
+	MOVWF      R0+0
+	MOVF       interrupt_Ostickcounter_L0+1, 0
+	MOVWF      R0+1
+	CALL       _Div_16x16_S+0
+	MOVF       R8+0, 0
+	MOVWF      R0+0
+	MOVF       R8+1, 0
+	MOVWF      R0+1
+	MOVLW      0
+	XORWF      R0+1, 0
+	BTFSS      STATUS+0, 2
+	GOTO       L__interrupt25
+	MOVLW      0
+	XORWF      R0+0, 0
+L__interrupt25:
+	BTFSS      STATUS+0, 2
+	GOTO       L_interrupt9
+;ProyectoFinal.c,114 :: 		OSTaskEnable = OSTaskEnable | 0x2;
+	BSF        _OSTaskEnable+0, 1
+;ProyectoFinal.c,115 :: 		}
+L_interrupt9:
+;ProyectoFinal.c,116 :: 		if ((Ostickcounter %100)==0)//cuenta 100 veces 1ms = 100ms
+	MOVLW      100
+	MOVWF      R4+0
+	MOVLW      0
+	MOVWF      R4+1
+	MOVF       interrupt_Ostickcounter_L0+0, 0
+	MOVWF      R0+0
+	MOVF       interrupt_Ostickcounter_L0+1, 0
+	MOVWF      R0+1
+	CALL       _Div_16x16_S+0
+	MOVF       R8+0, 0
+	MOVWF      R0+0
+	MOVF       R8+1, 0
+	MOVWF      R0+1
+	MOVLW      0
+	XORWF      R0+1, 0
+	BTFSS      STATUS+0, 2
+	GOTO       L__interrupt26
+	MOVLW      0
+	XORWF      R0+0, 0
+L__interrupt26:
+	BTFSS      STATUS+0, 2
+	GOTO       L_interrupt10
+;ProyectoFinal.c,118 :: 		OSTaskEnable = OSTaskEnable | 0x4;
+	BSF        _OSTaskEnable+0, 2
+;ProyectoFinal.c,119 :: 		Ostickcounter = 0;
+	CLRF       interrupt_Ostickcounter_L0+0
+	CLRF       interrupt_Ostickcounter_L0+1
+;ProyectoFinal.c,120 :: 		}
+L_interrupt10:
+;ProyectoFinal.c,121 :: 		}
+	GOTO       L_interrupt11
 L_interrupt7:
-;ProyectoFinal.c,99 :: 		myCount++;
+;ProyectoFinal.c,124 :: 		myCount++;
 	MOVF       interrupt_myCount_L0+0, 0
 	ADDLW      1
 	MOVWF      R0+0
@@ -173,9 +238,9 @@ L_interrupt7:
 	MOVWF      interrupt_myCount_L0+0
 	MOVF       R0+1, 0
 	MOVWF      interrupt_myCount_L0+1
-;ProyectoFinal.c,100 :: 		}
-L_interrupt8:
-;ProyectoFinal.c,101 :: 		}
+;ProyectoFinal.c,125 :: 		}
+L_interrupt11:
+;ProyectoFinal.c,127 :: 		}
 L_end_interrupt:
 L__interrupt23:
 	MOVF       ___savePCLATH+0, 0
@@ -189,137 +254,92 @@ L__interrupt23:
 
 _main:
 
-;ProyectoFinal.c,103 :: 		int main()
-;ProyectoFinal.c,105 :: 		TRISA = 0xFF;   //set all digital I/O to inputs
+;ProyectoFinal.c,129 :: 		int main()
+;ProyectoFinal.c,131 :: 		TRISA = 0xFF;   //set all digital I/O to inputs
 	MOVLW      255
 	MOVWF      TRISA+0
-;ProyectoFinal.c,106 :: 		TRISB = 0xFF;
+;ProyectoFinal.c,132 :: 		TRISB = 0xFF;
 	MOVLW      255
 	MOVWF      TRISB+0
-;ProyectoFinal.c,107 :: 		TRISC = 0xFF;
+;ProyectoFinal.c,133 :: 		TRISC = 0xFF;
 	MOVLW      255
 	MOVWF      TRISC+0
-;ProyectoFinal.c,109 :: 		ANSEL = 0x00;   //disable all analog ports
+;ProyectoFinal.c,135 :: 		ANSEL = 0x00;   //disable all analog ports
 	CLRF       ANSEL+0
-;ProyectoFinal.c,110 :: 		ANSELH = 0x00;
+;ProyectoFinal.c,136 :: 		ANSELH = 0x00;
 	CLRF       ANSELH+0
-;ProyectoFinal.c,112 :: 		TRISD.TRISD5 = 0;   //set RB7 as an output
+;ProyectoFinal.c,138 :: 		TRISD.TRISD5 = 0;   //set RD5 as an output
 	BCF        TRISD+0, 5
-;ProyectoFinal.c,118 :: 		OPTION_REG.PSA = 0;       //Prescaler assigned to Timer 0 (other option is to
+;ProyectoFinal.c,144 :: 		OPTION_REG.PSA = 0;       //Prescaler assigned to Timer 0 (other option is to
 	BCF        OPTION_REG+0, 3
-;ProyectoFinal.c,121 :: 		OPTION_REG.PS2 = 0;  //Set the prescaler to 1:256
+;ProyectoFinal.c,147 :: 		OPTION_REG.PS2 = 0;  //Set the prescaler to 1:1
 	BCF        OPTION_REG+0, 2
-;ProyectoFinal.c,122 :: 		OPTION_REG.PS1 = 1;  //Set the prescaler to 1:256
-	BSF        OPTION_REG+0, 1
-;ProyectoFinal.c,123 :: 		OPTION_REG.PS0 = 0;  //Set the prescaler to 1:256
+;ProyectoFinal.c,148 :: 		OPTION_REG.PS1 = 0;  //Set the prescaler to 1:1
+	BCF        OPTION_REG+0, 1
+;ProyectoFinal.c,149 :: 		OPTION_REG.PS0 = 0;  //Set the prescaler to 1:1
 	BCF        OPTION_REG+0, 0
-;ProyectoFinal.c,125 :: 		OPTION_REG.T0CS = 0;    //Use the instruction clock (Fcy/4) as the timer
+;ProyectoFinal.c,151 :: 		OPTION_REG.T0CS = 0;    //Use the instruction clock (Fcy/4) as the timer
 	BCF        OPTION_REG+0, 5
-;ProyectoFinal.c,129 :: 		INTCON.T0IF = 0;        //Clear the Timer 0 interrupt flag
+;ProyectoFinal.c,155 :: 		INTCON.T0IF = 0;        //Clear the Timer 0 interrupt flag
 	BCF        INTCON+0, 2
-;ProyectoFinal.c,130 :: 		TMR0 = 0;               //Load a value of 0 into the timer
+;ProyectoFinal.c,156 :: 		TMR0 = 0;               //Load a value of 0 into the timer
 	CLRF       TMR0+0
-;ProyectoFinal.c,131 :: 		INTCON.T0IE = 1;        //Enable the Timer 0 interrupt
+;ProyectoFinal.c,157 :: 		INTCON.T0IE = 1;        //Enable the Timer 0 interrupt
 	BSF        INTCON+0, 5
-;ProyectoFinal.c,132 :: 		INTCON.GIE = 1;         //Set the Global Interrupt Enable
+;ProyectoFinal.c,158 :: 		INTCON.GIE = 1;         //Set the Global Interrupt Enable
 	BSF        INTCON+0, 7
-;ProyectoFinal.c,134 :: 		inittask();
+;ProyectoFinal.c,160 :: 		inittask();
 	CALL       _inittask+0
-;ProyectoFinal.c,138 :: 		while(1)
-L_main9:
-;ProyectoFinal.c,141 :: 		if ((Ostickcounter %2)== 0) //cuenta 2 veces 500us = 1ms
-	MOVLW      2
-	MOVWF      R4+0
-	MOVLW      0
-	MOVWF      R4+1
-	MOVF       ProyectoFinal_Ostickcounter+0, 0
-	MOVWF      R0+0
-	MOVF       ProyectoFinal_Ostickcounter+1, 0
-	MOVWF      R0+1
-	CALL       _Div_16x16_S+0
-	MOVF       R8+0, 0
-	MOVWF      R0+0
-	MOVF       R8+1, 0
-	MOVWF      R0+1
-	MOVLW      0
-	XORWF      R0+1, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__main26
-	MOVLW      0
-	XORWF      R0+0, 0
-L__main26:
-	BTFSS      STATUS+0, 2
-	GOTO       L_main11
-;ProyectoFinal.c,143 :: 		task1ms();
-	CALL       _task1ms+0
-;ProyectoFinal.c,144 :: 		}
-	GOTO       L_main12
-L_main11:
-;ProyectoFinal.c,145 :: 		else if ((Ostickcounter %20)==0) //cuenta 20 veces 500us = 10ms
-	MOVLW      20
-	MOVWF      R4+0
-	MOVLW      0
-	MOVWF      R4+1
-	MOVF       ProyectoFinal_Ostickcounter+0, 0
-	MOVWF      R0+0
-	MOVF       ProyectoFinal_Ostickcounter+1, 0
-	MOVWF      R0+1
-	CALL       _Div_16x16_S+0
-	MOVF       R8+0, 0
-	MOVWF      R0+0
-	MOVF       R8+1, 0
-	MOVWF      R0+1
-	MOVLW      0
-	XORWF      R0+1, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__main27
-	MOVLW      0
-	XORWF      R0+0, 0
-L__main27:
-	BTFSS      STATUS+0, 2
-	GOTO       L_main13
-;ProyectoFinal.c,147 :: 		task10ms();
-	CALL       _task10ms+0
-;ProyectoFinal.c,149 :: 		}
-	GOTO       L_main14
-L_main13:
-;ProyectoFinal.c,150 :: 		else if ((Ostickcounter %200)==0)//cuenta 200 veces 500us = 100ms
-	MOVLW      200
-	MOVWF      R4+0
-	CLRF       R4+1
-	MOVF       ProyectoFinal_Ostickcounter+0, 0
-	MOVWF      R0+0
-	MOVF       ProyectoFinal_Ostickcounter+1, 0
-	MOVWF      R0+1
-	CALL       _Div_16x16_S+0
-	MOVF       R8+0, 0
-	MOVWF      R0+0
-	MOVF       R8+1, 0
-	MOVWF      R0+1
-	MOVLW      0
-	XORWF      R0+1, 0
-	BTFSS      STATUS+0, 2
-	GOTO       L__main28
-	MOVLW      0
-	XORWF      R0+0, 0
-L__main28:
-	BTFSS      STATUS+0, 2
-	GOTO       L_main15
-;ProyectoFinal.c,152 :: 		task100ms();
-	CALL       _task100ms+0
-;ProyectoFinal.c,153 :: 		Ostickcounter = 0;
-	CLRF       ProyectoFinal_Ostickcounter+0
-	CLRF       ProyectoFinal_Ostickcounter+1
-;ProyectoFinal.c,154 :: 		}
-	GOTO       L_main16
-L_main15:
-;ProyectoFinal.c,155 :: 		else { }
-L_main16:
-L_main14:
+;ProyectoFinal.c,164 :: 		while(1)
 L_main12:
-;ProyectoFinal.c,156 :: 		}
-	GOTO       L_main9
-;ProyectoFinal.c,159 :: 		}
+;ProyectoFinal.c,167 :: 		if ((OSTaskEnable & 0x1)!= 0)
+	MOVLW      1
+	ANDWF      _OSTaskEnable+0, 0
+	MOVWF      R1+0
+	MOVF       R1+0, 0
+	XORLW      0
+	BTFSC      STATUS+0, 2
+	GOTO       L_main14
+;ProyectoFinal.c,169 :: 		task1ms();
+	CALL       _task1ms+0
+;ProyectoFinal.c,170 :: 		OSTaskEnable = OSTaskEnable & 0xFE;
+	MOVLW      254
+	ANDWF      _OSTaskEnable+0, 1
+;ProyectoFinal.c,171 :: 		}
+L_main14:
+;ProyectoFinal.c,172 :: 		if ((OSTaskEnable & 0x2)!= 0)
+	MOVLW      2
+	ANDWF      _OSTaskEnable+0, 0
+	MOVWF      R1+0
+	MOVF       R1+0, 0
+	XORLW      0
+	BTFSC      STATUS+0, 2
+	GOTO       L_main15
+;ProyectoFinal.c,174 :: 		task10ms();
+	CALL       _task10ms+0
+;ProyectoFinal.c,175 :: 		OSTaskEnable = OSTaskEnable & 0xFD;
+	MOVLW      253
+	ANDWF      _OSTaskEnable+0, 1
+;ProyectoFinal.c,177 :: 		}
+L_main15:
+;ProyectoFinal.c,178 :: 		if ((OSTaskEnable & 0x4)!= 0)
+	MOVLW      4
+	ANDWF      _OSTaskEnable+0, 0
+	MOVWF      R1+0
+	MOVF       R1+0, 0
+	XORLW      0
+	BTFSC      STATUS+0, 2
+	GOTO       L_main16
+;ProyectoFinal.c,180 :: 		task100ms();
+	CALL       _task100ms+0
+;ProyectoFinal.c,181 :: 		OSTaskEnable = OSTaskEnable & 0xFB;
+	MOVLW      251
+	ANDWF      _OSTaskEnable+0, 1
+;ProyectoFinal.c,182 :: 		}
+L_main16:
+;ProyectoFinal.c,183 :: 		}
+	GOTO       L_main12
+;ProyectoFinal.c,186 :: 		}
 L_end_main:
 	GOTO       $+0
 ; end of _main

@@ -43,7 +43,9 @@ Count=0
 [Useses]
 Count=0
 [EXPANDED_NODES]
-Count=0
+0=MyProject.mcppi
+1=Sources
+Count=2
 [LIB_EXPANDED_NODES]
 Count=0
 [PROGRAMMER_TYPE]

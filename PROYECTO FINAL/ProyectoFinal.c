@@ -10,35 +10,51 @@ void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
      static char estadodesecuencia = 0;
      static long cuentadepasos = 0; 
 
+        /*// Sentido horario
+        PORTD &= 0xF0;
+        PORTD |= 0b1001; // Paso 1
+        delay_ms(10);
+        PORTD &= 0xF0;
+        PORTD |= 0b0011; // Paso 2
+        delay_ms(10);
+        PORTD &= 0xF0;
+        PORTD |= 0b0110; // Paso 3
+        delay_ms(10);
+        PORTD &= 0xF0;
+        PORTD |= 0b1100; // Paso 4
+        delay_ms(10);*/
+
+
      switch (estadodesecuencia){
             case 0:
-                   PORTD = PORTD & 0xF0;
-                   PORTD = PORTD | 0b1001;
+              PORTD &= 0xF0;
+              PORTD |= 0b1001; // Paso 1
             break;
             case 1:
-                   PORTD = PORTD & 0xF0;
-                   PORTD = PORTD | 0b0011; // Paso 2
+              PORTD &= 0xF0;
+              PORTD |= 0b0011; // Paso 2
             break;
             case 2:
-                   PORTD = PORTD & 0xF0;
-                   PORTD = PORTD | 0b0110; // Paso 3
+              PORTD &= 0xF0;
+              PORTD |= 0b0110; // Paso 3
             break;
             case 3:
-                   PORTD = PORTD & 0xF0;
-                   PORTD = PORTD | 0b1100; // Paso 4
-                   estadodesecuencia = 0;
-                   
+              PORTD &= 0xF0;
+              PORTD |= 0b1100; // Paso 4
+              estadodesecuencia = 0;
             break;
             default:
-            
+              estadodesecuencia = 0;
             break;
      }
+     estadodesecuencia++;
 }
 
 void inittask (void)
 {
      //Inicializar Stepper Motor
-     TRISD = TRISD & 0xF0; // Solo Los primeros 4 BITS 0 al 3 los otros se quedan en 0
+     TRISD = 0x00; // Solo Los primeros 4 BITS 0 al 3 los otros se quedan en 0
+     PORTD &= 0xF0;        // Inicializar los 4 BITS a 0
 }
 
 void  task1ms (void)
@@ -48,29 +64,21 @@ void  task1ms (void)
 
 
 
+
 }
-
-
-
-
-
-
 
 void  task10ms (void)
 {
       //PORTD.RD5 = ~PORTD.RD5;
-      //StepperMotorControl(0);
+
 
 
 }
 
-
-
-
-
 void  task100ms (void)
 {
       //PORTD.RD5 = ~PORTD.RD5;
+      StepperMotorControl(0);
 
 }
 

@@ -2,10 +2,10 @@ main
 	__CC2DW
 		____DoICP
 	inittask
-	Div_16x16_S
-		Div_16x16_S_L
 	task1ms
 	task10ms
-		StepperMotorControl
 	task100ms
+		StepperMotorControl
 interrupt
+	Div_16x16_S
+		Div_16x16_S_L

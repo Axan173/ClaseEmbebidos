@@ -4,42 +4,43 @@
 
 
 
-volatile static int Ostickcounter = 0;
+volatile char OSTaskEnable = 0;
 
 void StepperMotorControl (int direcciongiro)
 {
  static char estadodesecuencia = 0;
  static long cuentadepasos = 0;
-
+#line 28 "C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c"
  switch (estadodesecuencia){
  case 0:
- PORTD = PORTD & 0xF0;
- PORTD = PORTD | 0b1001;
+ PORTD &= 0xF0;
+ PORTD |= 0b1001;
  break;
  case 1:
- PORTD = PORTD & 0xF0;
- PORTD = PORTD | 0b0011;
+ PORTD &= 0xF0;
+ PORTD |= 0b0011;
  break;
  case 2:
- PORTD = PORTD & 0xF0;
- PORTD = PORTD | 0b0110;
+ PORTD &= 0xF0;
+ PORTD |= 0b0110;
  break;
  case 3:
- PORTD = PORTD & 0xF0;
- PORTD = PORTD | 0b1100;
+ PORTD &= 0xF0;
+ PORTD |= 0b1100;
  estadodesecuencia = 0;
-
  break;
  default:
-
+ estadodesecuencia = 0;
  break;
  }
+ estadodesecuencia++;
 }
 
 void inittask (void)
 {
 
- TRISD = TRISD & 0xF0;
+ TRISD = 0x00;
+ PORTD &= 0xF0;
 }
 
 void task1ms (void)
@@ -49,52 +50,62 @@ void task1ms (void)
 
 
 
+
 }
-
-
-
-
-
-
 
 void task10ms (void)
 {
- StepperMotorControl(0);
+
+
 
 
 }
-
-
-
-
 
 void task100ms (void)
 {
-
+ PORTD.RD5 = ~PORTD.RD5;
+ StepperMotorControl(0);
 
 }
-#line 80 "C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c"
+#line 89 "C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c"
 void interrupt()
 {
 
  volatile static int myCount = 0;
+ volatile static int Ostickcounter = 0;
 
- if(myCount==8)
- {
+
  INTCON.T0IF = 0;
  TMR0 = 0;
 
 
 
 
- PORTD.RD5 = ~PORTD.RD5;
- Ostickcounter ++;
+ if(myCount==8)
+ {
+
+ Ostickcounter++;
  myCount = 0;
+
+ if ((Ostickcounter %1)== 0)
+ {
+ OSTaskEnable = OSTaskEnable | 0x1;
+ }
+ if ((Ostickcounter %10)==0)
+ {
+ OSTaskEnable = OSTaskEnable | 0x2;
+ }
+ if ((Ostickcounter %100)==0)
+ {
+ OSTaskEnable = OSTaskEnable | 0x4;
+ Ostickcounter = 0;
+ }
  }
  else
  {
  myCount++;
  }
+
 }
 
 int main()
@@ -116,7 +127,7 @@ int main()
 
 
  OPTION_REG.PS2 = 0;
- OPTION_REG.PS1 = 1;
+ OPTION_REG.PS1 = 0;
  OPTION_REG.PS0 = 0;
 
  OPTION_REG.T0CS = 0;
@@ -135,21 +146,22 @@ int main()
  while(1)
  {
 
- if ((Ostickcounter %2)== 0)
+ if ((OSTaskEnable & 0x1)!= 0)
  {
  task1ms();
+ OSTaskEnable = OSTaskEnable & 0xFE;
  }
- else if ((Ostickcounter %20)==0)
+ if ((OSTaskEnable & 0x2)!= 0)
  {
  task10ms();
+ OSTaskEnable = OSTaskEnable & 0xFD;
 
  }
- else if ((Ostickcounter %200)==0)
+ if ((OSTaskEnable & 0x4)!= 0)
  {
  task100ms();
- Ostickcounter = 0;
+ OSTaskEnable = OSTaskEnable & 0xFB;
  }
- else { }
  }
 
  return 0;
