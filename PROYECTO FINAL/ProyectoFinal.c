@@ -91,7 +91,7 @@ void interrupt()
                             //register will be at 0 anyway after rolling
                             //over
 
-    if(myCount==3)
+    if(myCount==8)
     {
         //PORTD.RD5 = ~PORTD.RD5; //Toggle the LED
         Ostickcounter++;
