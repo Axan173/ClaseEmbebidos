@@ -325,6 +325,7 @@ hts_bit
 ics_auto
 ics_off
 indf
+inittask
 int2double
 intcon
 inte
@@ -677,6 +678,7 @@ sspov
 sspov_bit
 sspstat
 status
+steppermotorcontrol
 stra
 stra_bit
 strb

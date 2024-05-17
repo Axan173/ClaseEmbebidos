@@ -3,7 +3,45 @@
 
 
 
+
 volatile static int Ostickcounter = 0;
+
+void StepperMotorControl (int direcciongiro)
+{
+ static char estadodesecuencia = 0;
+ static long cuentadepasos = 0;
+
+ switch (estadodesecuencia){
+ case 0:
+ PORTD = PORTD & 0xF0;
+ PORTD = PORTD | 0b1001;
+ break;
+ case 1:
+ PORTD = PORTD & 0xF0;
+ PORTD = PORTD | 0b0011;
+ break;
+ case 2:
+ PORTD = PORTD & 0xF0;
+ PORTD = PORTD | 0b0110;
+ break;
+ case 3:
+ PORTD = PORTD & 0xF0;
+ PORTD = PORTD | 0b1100;
+ estadodesecuencia = 0;
+
+ break;
+ default:
+
+ break;
+ }
+}
+
+void inittask (void)
+{
+
+ TRISD = TRISD & 0xF0;
+}
+
 void task1ms (void)
 {
 
@@ -21,7 +59,7 @@ void task1ms (void)
 
 void task10ms (void)
 {
-
+ StepperMotorControl(0);
 
 
 }
@@ -35,7 +73,7 @@ void task100ms (void)
 
 
 }
-#line 42 "C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c"
+#line 80 "C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c"
 void interrupt()
 {
 
@@ -90,7 +128,7 @@ int main()
  INTCON.T0IE = 1;
  INTCON.GIE = 1;
 
-
+ inittask();
 
 
 
@@ -104,6 +142,7 @@ int main()
  else if ((Ostickcounter %20)==0)
  {
  task10ms();
+
  }
  else if ((Ostickcounter %200)==0)
  {

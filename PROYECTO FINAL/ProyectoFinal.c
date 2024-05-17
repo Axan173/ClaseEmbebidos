@@ -2,7 +2,45 @@
 
 #define _XTAL_FREQ 4000000  //4MHz, which is default
 
+
 volatile static int Ostickcounter = 0;
+
+void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
+{
+     static char estadodesecuencia = 0;
+     static long cuentadepasos = 0; 
+
+     switch (estadodesecuencia){
+            case 0:
+                   PORTD = PORTD & 0xF0;
+                   PORTD = PORTD | 0b1001;
+            break;
+            case 1:
+                   PORTD = PORTD & 0xF0;
+                   PORTD = PORTD | 0b0011; // Paso 2
+            break;
+            case 2:
+                   PORTD = PORTD & 0xF0;
+                   PORTD = PORTD | 0b0110; // Paso 3
+            break;
+            case 3:
+                   PORTD = PORTD & 0xF0;
+                   PORTD = PORTD | 0b1100; // Paso 4
+                   estadodesecuencia = 0;
+                   
+            break;
+            default:
+            
+            break;
+     }
+}
+
+void inittask (void)
+{
+     //Inicializar Stepper Motor
+     TRISD = TRISD & 0xF0; // Solo Los primeros 4 BITS 0 al 3 los otros se quedan en 0
+}
+
 void  task1ms (void)
 {
 
@@ -20,7 +58,7 @@ void  task1ms (void)
 
 void  task10ms (void)
 {
-
+      StepperMotorControl(0);
 
 
 }
@@ -93,7 +131,7 @@ int main()
     INTCON.T0IE = 1;        //Enable the Timer 0 interrupt
     INTCON.GIE = 1;         //Set the Global Interrupt Enable
 
-
+    inittask();
     ///////////////////////
     // Main Program Loop //
     ///////////////////////
@@ -107,6 +145,7 @@ int main()
      else if ((Ostickcounter %20)==0) //cuenta 20 veces 500us = 10ms
      {
           task10ms();
+          
      }
      else if ((Ostickcounter %200)==0)//cuenta 200 veces 500us = 100ms
      {
