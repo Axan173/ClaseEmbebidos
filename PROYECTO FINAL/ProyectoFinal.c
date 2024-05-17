@@ -3,7 +3,7 @@
 #define _XTAL_FREQ 4000000  //4MHz, which is default
 
 
-volatile static int Ostickcounter = 0;
+volatile char OSTaskEnable = 0;
 
 void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
 {
@@ -43,7 +43,7 @@ void inittask (void)
 
 void  task1ms (void)
 {
-
+      PORTD.RD5 = ~PORTD.RD5;
 
 
 
@@ -58,7 +58,8 @@ void  task1ms (void)
 
 void  task10ms (void)
 {
-      StepperMotorControl(0);
+      //PORTD.RD5 = ~PORTD.RD5;
+      //StepperMotorControl(0);
 
 
 }
@@ -69,7 +70,7 @@ void  task10ms (void)
 
 void  task100ms (void)
 {
-
+      //PORTD.RD5 = ~PORTD.RD5;
 
 }
 
@@ -81,23 +82,40 @@ void interrupt()
 {
 
     volatile static int myCount = 0;
+    volatile static int Ostickcounter = 0;
+    
+    
+    INTCON.T0IF = 0;        //Clear the Timer 0 interrupt flag
+    TMR0 = 0;               //Load a value of 0 into the timer
+                            //This is actually not necessary since the
+                            //register will be at 0 anyway after rolling
+                            //over
 
-    if(myCount==8)
+    if(myCount==3)
     {
-        INTCON.T0IF = 0;        //Clear the Timer 0 interrupt flag
-        TMR0 = 0;               //Load a value of 0 into the timer
-                                //This is actually not necessary since the
-                                //register will be at 0 anyway after rolling
-                                //over
-
-        PORTD.RD5 = ~PORTD.RD5; //Toggle the LED
-        Ostickcounter ++;
+        //PORTD.RD5 = ~PORTD.RD5; //Toggle the LED
+        Ostickcounter++;
         myCount = 0;
+        
+        if ((Ostickcounter %1)== 0) //cuenta 1 veces 1ms = 1ms
+        {
+              OSTaskEnable = OSTaskEnable | 0x1;
+        }
+        if ((Ostickcounter %10)==0) //cuenta 10 veces 1ms = 10ms
+        {
+              OSTaskEnable = OSTaskEnable | 0x2;
+        }
+        if ((Ostickcounter %100)==0)//cuenta 100 veces 1ms = 100ms
+        {
+              OSTaskEnable = OSTaskEnable | 0x4;
+              Ostickcounter = 0;
+        }
     }
     else
     {
         myCount++;
     }
+    
 }
 
 int main()
@@ -109,7 +127,7 @@ int main()
     ANSEL = 0x00;   //disable all analog ports
     ANSELH = 0x00;
 
-    TRISD.TRISD5 = 0;   //set RB7 as an output
+    TRISD.TRISD5 = 0;   //set RD5 as an output
 
 
     ///////////////////
@@ -118,9 +136,9 @@ int main()
     OPTION_REG.PSA = 0;       //Prescaler assigned to Timer 0 (other option is to
                               //the Watchdog timer (WDT))
 
-    OPTION_REG.PS2 = 0;  //Set the prescaler to 1:256
-    OPTION_REG.PS1 = 1;  //Set the prescaler to 1:256
-    OPTION_REG.PS0 = 0;  //Set the prescaler to 1:256
+    OPTION_REG.PS2 = 0;  //Set the prescaler to 1:1
+    OPTION_REG.PS1 = 0;  //Set the prescaler to 1:1
+    OPTION_REG.PS0 = 0;  //Set the prescaler to 1:1
 
     OPTION_REG.T0CS = 0;    //Use the instruction clock (Fcy/4) as the timer
                             //clock. Other option is an external oscillator
@@ -138,21 +156,22 @@ int main()
     while(1)
     {
 
-     if ((Ostickcounter %2)== 0) //cuenta 2 veces 500us = 1ms
+     if ((OSTaskEnable & 0x1)!= 0)
      {
           task1ms();
+          OSTaskEnable = OSTaskEnable & 0xFE;
      }
-     else if ((Ostickcounter %20)==0) //cuenta 20 veces 500us = 10ms
+     if ((OSTaskEnable & 0x2)!= 0)
      {
           task10ms();
+          OSTaskEnable = OSTaskEnable & 0xFD;
           
      }
-     else if ((Ostickcounter %200)==0)//cuenta 200 veces 500us = 100ms
+     if ((OSTaskEnable & 0x4)!= 0)
      {
           task100ms();
-          Ostickcounter = 0;
+          OSTaskEnable = OSTaskEnable & 0xFB;
      }
-     else { }
     }
 
     return 0;
