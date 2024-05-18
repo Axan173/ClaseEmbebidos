@@ -124,7 +124,7 @@ void displayControl(void)
         }
         LCD_Sprint(&TEXTO1,0,1);
         LCD_Nprint(&cuenta,0,11);
-        //cuenta++;
+        cuenta--;
         refreshRate=0;
     }
     
@@ -196,7 +196,7 @@ void  task10ms (void)
 void  task100ms (void)
 {
       //PORTD.RD5 = ~PORTD.RD5;
-      cuenta = Tecla_Presionada();
+      //cuenta = Tecla_Presionada();
 
       displayControl();
       

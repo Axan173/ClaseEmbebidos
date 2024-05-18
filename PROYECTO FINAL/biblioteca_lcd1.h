@@ -1,4 +1,4 @@
-//Definir la cantidad de bits que se usará
+//Definir la cantidad de bits que se usarï¿½
 #define L_4Bits
 //#define L_8Bits
 
@@ -12,23 +12,23 @@
 #define   DB6  6   //Bit Seis del Data Bus
 #define   DB7  7   //Bit Siete del Data Bus
 
-//Definir para la visualización del display
+//Definir para la visualizaciï¿½n del display
 #define   F    2   //Matrix
 #define   NL   3   //N Lines
 
-//Definir bits para la configuración de la pantalla
+//Definir bits para la configuraciï¿½n de la pantalla
 #define   RS   0   //Bit Select register del LCD
 #define   RW   1   //Bit Read/Write del LCD
 #define   E    2   //Bit Enable
-#define   DL   4   //Selcciona el tipo de comunicación
+#define   DL   4   //Selcciona el tipo de comunicaciï¿½n
 
-//Configuración de la Pantalla en el Function Set
-#define  NL_2  1   //Selecciona el número de líneas  1=2 líneas
-#define  NL_1  0   //                                0=1 línea
-#define  F5_8  0   //Selecciona el tamaño de la matriz 0=5x8
+//Configuraciï¿½n de la Pantalla en el Function Set
+#define  NL_2  1   //Selecciona el nï¿½mero de lï¿½neas  1=2 lï¿½neas
+#define  NL_1  0   //                                0=1 lï¿½nea
+#define  F5_8  0   //Selecciona el tamaï¿½o de la matriz 0=5x8
 #define  F5_10 1   //                                 1=5x10
 
-//Configuración de la pantalla en On Off
+//Configuraciï¿½n de la pantalla en On Off
 #define Dsp_OFF 0   //Display apagado
 #define Dsp_ON  1   //Display encendido
 #define Cur_OFF 0   //Cursor apagado
@@ -36,7 +36,7 @@
 #define Blk_OFF 0   //Parpadeo apagado
 #define Blk_ON  1   //Parpadeo encendido
 
-//Configuración de la pantalla para Entry Mode Set
+//Configuraciï¿½n de la pantalla para Entry Mode Set
 #define Mode_INC 1  //Modo incremento
 #define Mode_DEC 0  //Modo decremento
 #define EntireShift_ON   1    //Entire Shift activado
@@ -57,7 +57,7 @@
   #define LCD_Ctrl_Data PORTE //habilitar el puerto E
   #define LCD_Bus_PORT TRISD  // seleccion si es entrada o salida en el puerto
   #define LCD_Bus_Data PORTD    //habilitar el puerto D
-  #define NB  1   //Selecciona el número de bits  1 =8 bits
+  #define NB  1   //Selecciona el nï¿½mero de bits  1 =8 bits
 #endif
 
 //Figura 1
@@ -143,7 +143,7 @@
 #define figs 2
 #define kfig (8*figs)
 
-unsigned int cuenta=0;
+unsigned int cuenta=999;
 unsigned char DB;   //Variable para el manejo de Instrucciones
 unsigned char unidades=0;  //Variable para las Unidades
 unsigned char decenas=0;  //Variable para las Decenas
@@ -159,22 +159,22 @@ unsigned char FIG6[]={F41,F42,F43,F44,F45,F46,F47,F48};
 unsigned char FIG7[]={F49,F50,F51,F52,F53,F54,F55,F56};
 unsigned char FIG8[]={F57,F58,F59,F60,F61,F62,F63,F64};
 
- /******** CONFIGURACIÓN DE TERMINALES *********
-| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | Módulo de LCD GND VCC  VO  RS  RW   E  DB0 DB1 DB2  DB3  DB4  DB5  DB6  DB7
+ /******** CONFIGURACIï¿½N DE TERMINALES *********
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | Mï¿½dulo de LCD GND VCC  VO  RS  RW   E  DB0 DB1 DB2  DB3  DB4  DB5  DB6  DB7
      RE0 RE1 RE2 RD0 RD1 RD2 RD3 RD4 RD5 RD6  RD7  Terminales DEL MICRO
 */
 
 void LCD_set(unsigned char *LCD_Ctrl_PORT,unsigned char *LCD_Bus_Data);
-void LCD_Reset(void);  //Función de Reset
+void LCD_Reset(void);  //Funciï¿½n de Reset
 void LCD_Function_Init(unsigned char lcd_dl);
 void LCD_Function_Set(unsigned char Data_Lenght,unsigned char NumL,unsigned char Font);
-void LCD_On_Off(unsigned char dsp_on_off,unsigned char cur_on_off,unsigned char blk_on_off);  //Activación del LCD
+void LCD_On_Off(unsigned char dsp_on_off,unsigned char cur_on_off,unsigned char blk_on_off);  //Activaciï¿½n del LCD
 void LCD_Clear(void);   //Limpiar el Display
 void LDC_EntryMode_Set(unsigned char Mode_in_dec,unsigned char EnterShift_on_off);  //Movimiento del Cursor
-void LCD_DDRAM_Set(unsigned char fila,unsigned char columna);  //Dirección de Inicio en el LCD
-void LCD_Enable(unsigned char DB_);   //Señal de Habilitación
-void LCD_Cadena1(int x, int y);//olatile unsigned char TEXTO1[]);  //Función para imprimir cadena
-void delay_ms(unsigned int msegs);  //Función de delay_msegs
+void LCD_DDRAM_Set(unsigned char fila,unsigned char columna);  //Direcciï¿½n de Inicio en el LCD
+void LCD_Enable(unsigned char DB_);   //Seï¿½al de Habilitaciï¿½n
+void LCD_Cadena1(int x, int y);//olatile unsigned char TEXTO1[]);  //Funciï¿½n para imprimir cadena
+void delay_ms(unsigned int msegs);  //Funciï¿½n de delay_msegs
 void LCD_Nprint(unsigned int *contador,int x, int y);
 void LCD_Sprint(unsigned char *string_buffer,int x,int y);
 void LCD_CGRAM_Set(unsigned char *patron,unsigned char *address);
@@ -194,8 +194,8 @@ void LCD_set(unsigned char *LCD_Ctrl_PORT,unsigned char *LCD_Bus_Data,unsigned c
         //delay_ms(50);
 }
 
-void LCD_Reset(void){         //Función de Reset
-        //Tiempo de Inicialización Interna del Módulo de LCD
+void LCD_Reset(void){         //Funciï¿½n de Reset
+        //Tiempo de Inicializaciï¿½n Interna del Mï¿½dulo de LCD
         delay_ms(50);
 }
 
@@ -209,17 +209,17 @@ void LCD_Function_Init(unsigned char lcd_dl){
      delay_ms(1);
 }
 
-void LCD_Function_Set(unsigned char Data_Lenght,unsigned char NumL,unsigned char Font){ //Configuración del LCD
-/****** CONFIGURACIÓN DEL LCD ********
+void LCD_Function_Set(unsigned char Data_Lenght,unsigned char NumL,unsigned char Font){ //Configuraciï¿½n del LCD
+/****** CONFIGURACIï¿½N DEL LCD ********
  RS RW DB7 DB6 DB5 DB4 DB3 DB2 DB1 DB0
- 0   0   0   0   1   1   NL   F   ×   ×
+ 0   0   0   0   1   1   NL   F   ï¿½   ï¿½
  NL=0 Modo de 1 Linea      F=0 Matriz de 5x8 pixeles
 NL=1 Modo de 2 Lineas   F=1 Matriz de 5x10 pixeles
 */
         DB = (1<<DB5)|(Data_Lenght<<DB4)|(NumL<<DB3)|(Font<<DB2);
         LCD_Enable(DB);
 }
-void LCD_On_Off(unsigned char dsp_on_off,unsigned char cur_on_off,unsigned char blk_on_off){        //Activación del LCD
+void LCD_On_Off(unsigned char dsp_on_off,unsigned char cur_on_off,unsigned char blk_on_off){        //Activaciï¿½n del LCD
 /***** Display ON/OFF Control *********
  /* RS RW  DB7  DB6  DB5    DB4   DB3  DB2 DB1 DB0
   0    0   0    0     0      0     1    DSP CUR BLK
@@ -246,15 +246,15 @@ ID=1 Increment Mode SH=1 Entire Shift On
         DB=(1<<DB2)|(Mode_in_dec<<DB1)|(EnterShift_on_off<<DB0);
 }
 
- void LCD_DDRAM_Set(unsigned char fila,unsigned char columna) {         //Dirección de Inicio en la segunda Línea en el LCD
- /******* Dirección RAM **********
+ void LCD_DDRAM_Set(unsigned char fila,unsigned char columna) {         //Direcciï¿½n de Inicio en la segunda Lï¿½nea en el LCD
+ /******* Direcciï¿½n RAM **********
   RS RW DB7 DB6 DB5 DB4 DB3 DB2 DB1 DB0
   0   0   1   1   0   0   0   0   0   0 */
       DB= SET_CURSOR_DDRAM[fila][columna];
       LCD_Enable(DB);
 }
 
-void LCD_Enable(unsigned char DB_){         //Señal de Habilitación
+void LCD_Enable(unsigned char DB_){         //Seï¿½al de Habilitaciï¿½n
 #ifdef L_8Bits
      LCD_Bus_Data=DB_;
 #else
@@ -281,16 +281,24 @@ void LCD_Nprint(unsigned int *valor,int x,int y) {
     unidades = ((*valor%100)% 10)+'0';
     LCD_Ctrl_Data |= (1 << RS); // RS en alto para enviar datos
     if(centenas!=(0+'0')){
-       DB=centenas; // Extrae el último dígito y conviértelo a caracter ASCII
+       DB=centenas; // Extrae el ï¿½ltimo dï¿½gito y conviï¿½rtelo a caracter ASCII
        LCD_Enable(DB);
     }
-    if(decenas!=(0+'0')){
-       DB=decenas; // Extrae el último dígito y conviértelo a caracter ASCII
+    else
+    {
+     LCD_Enable(32);
+    }
+    if(decenas!=(0+'0') || centenas!=(0+'0')){
+       DB=decenas; // Extrae el ï¿½ltimo dï¿½gito y conviï¿½rtelo a caracter ASCII
        LCD_Enable(DB);
     }
-    DB=unidades; // Extrae el último dígito y conviértelo a caracter ASCII
+    else
+     {
+          LCD_Enable(32);
+     }
+    DB=unidades; // Extrae el ï¿½ltimo dï¿½gito y conviï¿½rtelo a caracter ASCII
     LCD_Enable(DB);
-    LCD_Ctrl_Data &= ~(1 << RS); // RS en bajo al finalizar el envío de datos while (i!=10)   {
+    LCD_Ctrl_Data &= ~(1 << RS); // RS en bajo al finalizar el envï¿½o de datos while (i!=10)   {
 }
 
 void LCD_Sprint(unsigned char *string_buffer,int x,int y){
