@@ -6,6 +6,18 @@
 
 volatile char OSTaskEnable = 0;
 
+
+void ADCConversionLDR(void)
+{
+      ADCON0.GO_DONE=1; //Inicio de Conversión
+      while(ADCON0.GO_DONE){}; //TODO quitar esta basura :)
+
+      cuenta = ((ADRESH&0x3)<<8) | (ADRESL&0x00FF);
+
+}
+
+
+
 void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
 {
      static char estadodesecuencia = 5;
@@ -76,7 +88,7 @@ void displayControl(void)
         }
         LCD_Sprint(&TEXTO1,0,1);
         LCD_Nprint(&cuenta,0,11);
-        cuenta++;
+        //cuenta++;
         refreshRate=0;
     }
     
@@ -110,6 +122,19 @@ void inittask (void)
         LCD_CGRAM_Set(&FIG6,6);
         LCD_CGRAM_Set(&FIG7,7);
         LCD_CGRAM_Set(&FIG8,8);
+        
+     // Inicializacion del ADC
+
+      TRISA.RA0=1; //Bit 0 del Puerto A como entrada 
+      ANSEL.RA0=1; //Bit O del Puerto A como entrada analoga.
+      
+      ADCON0.ADCS1=1; //Selección del Oscilador Interno FRC
+      ADCON0.ADCS0=1;             //Selección del canal 0 de forma predeterminada
+      
+      ADCON1.ADFM=1; //Justificado a la Derecha
+                     //Selección predefinada del Vref (VDD a VSS)
+      ADCON0.ADON=1; //Encendido del ADC.
+
 }
 
 void  task1ms (void)
@@ -130,7 +155,8 @@ void  task100ms (void)
 {
       //PORTD.RD5 = ~PORTD.RD5;
       displayControl();
-
+      
+      ADCConversionLDR();
 }
 
 //set the configuration bits: internal OSC, everything off except MCLR
