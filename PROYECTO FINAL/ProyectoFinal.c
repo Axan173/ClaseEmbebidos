@@ -1,4 +1,5 @@
 //#include <xc.h>    //Use this to include the device header for your PIC.
+#include "biblioteca_lcd1.h"
 
 #define _XTAL_FREQ 4000000  //4MHz, which is default
 
@@ -42,21 +43,78 @@ void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
 
 }
 
+
+void displayControl(void)
+{
+    volatile int i=0;
+    volatile static int refreshRate = 0;
+    
+    if(refreshRate == 5)
+    {
+        if(i==0){
+           LCD_Write(0x04,1,1);
+           LCD_Write(0x04,1,5);
+           LCD_Write(0x04,1,9);
+           LCD_Write(0x04,1,13);
+
+           LCD_Write(0x01,1,3);
+           LCD_Write(0x02,1,7);
+           LCD_Write(0x03,1,11);
+           i++;
+        }
+        else
+        {
+           LCD_Write(0x04,1,3);
+           LCD_Write(0x04,1,7);
+           LCD_Write(0x04,1,11);
+
+           LCD_Write(0x05,1,1);
+           LCD_Write(0x06,1,5);
+           LCD_Write(0x07,1,9);
+           LCD_Write(0x08,1,13);
+           i=0;
+        }
+        LCD_Sprint(&TEXTO1,0,1);
+        LCD_Nprint(&cuenta,0,11);
+        cuenta++;
+        refreshRate=0;
+    }
+    
+    refreshRate++;
+}
+
 void inittask (void)
 {
      //Inicializar Stepper Motor
      TRISD = 0x00; // Solo Los primeros 4 BITS 0 al 3 los otros se quedan en 0
      PORTD &= 0xF0;        // Inicializar los 4 BITS a 0
+     
+
+     //Inicializar el Display
+        LCD_set(&LCD_Ctrl_PORT,&LCD_Bus_Data,&LCD_Bus_PORT,&LCD_Ctrl_Data);
+        LCD_Reset();
+        LCD_Function_Init(true);
+        LCD_Function_Init(true);
+        LCD_Function_Init(false);
+        LCD_Function_Set(NB,NL_2,F5_10);
+        LCD_Function_Set(NB,NL_2,F5_10);
+        LCD_On_Off(Dsp_ON,Cur_ON,Blk_OFF);
+        LCD_Clear();
+        LDC_EntryMode_Set(Mode_INC,EntireShift_OFF);
+        LCD_Sprint(&TEXTO1,0,1);
+        LCD_CGRAM_Set(&FIG1,1);
+        LCD_CGRAM_Set(&FIG2,2);
+        LCD_CGRAM_Set(&FIG3,3);
+        LCD_CGRAM_Set(&FIG4,4);
+        LCD_CGRAM_Set(&FIG5,5);
+        LCD_CGRAM_Set(&FIG6,6);
+        LCD_CGRAM_Set(&FIG7,7);
+        LCD_CGRAM_Set(&FIG8,8);
 }
 
 void  task1ms (void)
 {
       PORTD.RD5 = ~PORTD.RD5;
-      StepperMotorControl(0);
-
-
-
-
 
 }
 
@@ -71,7 +129,7 @@ void  task10ms (void)
 void  task100ms (void)
 {
       //PORTD.RD5 = ~PORTD.RD5;
-
+      displayControl();
 
 }
 
