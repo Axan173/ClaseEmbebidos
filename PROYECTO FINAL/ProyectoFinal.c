@@ -1,6 +1,6 @@
 //#include <xc.h>    //Use this to include the device header for your PIC.
 #include "biblioteca_lcd1.h"
-
+#include "Teclado.h"
 #define _XTAL_FREQ 4000000  //4MHz, which is default
 
 
@@ -9,14 +9,50 @@ volatile char OSTaskEnable = 0;
 
 void ADCConversionLDR(void)
 {
-      ADCON0.GO_DONE=1; //Inicio de Conversión
+      ADCON0.GO_DONE=1; //Inicio de Conversiï¿½n
       while(ADCON0.GO_DONE){}; //TODO quitar esta basura :)
 
-      cuenta = ((ADRESH&0x3)<<8) | (ADRESL&0x00FF);
+      //cuenta = ((ADRESH&0x3)<<8) | (ADRESL&0x00FF);
 
 }
 
+unsigned char Tecla_Presionada(void)
+{     
+      unsigned char Filas;    //Filas Teclado
+      unsigned char CF;   //Columnas y Filas (0xCF) del Teclado
+      volatile unsigned char TP;    //Tecla presionada
 
+      for (Filas=0x01;Filas!=0x10;Filas = Filas << 1)
+      {
+            Teclado_Out = Filas;    //Filas a puerto
+            // TODO QUITAR ESTA BASURA DE DELAY :)
+            delay_ms(2);           //Evitar rebote (bounce)
+            CF = Teclado_In;         //Lectura del Teclado, Columnas y Filas
+
+
+            switch (CF)
+            {
+                case 0x11: return TP=1;  break; //1
+                case 0x21: return TP=2;  break; //2
+                case 0x41: return TP=3;  break; //3
+                case 0x81: return TP=10; break; //A
+                case 0x12: return TP=4;  break; //4
+                case 0x22: return TP=5;  break; //5
+                case 0x42: return TP=6;  break; //6
+                case 0x82: return TP=11; break; //B
+                case 0x14: return TP=7;  break; //7
+                case 0x24: return TP=8;  break; //8
+                case 0x44: return TP=9;  break; //9
+                case 0x84: return TP=12; break; //C
+                case 0x18: return TP=14; break; //E
+                case 0x28: return TP=0;  break; //0
+                case 0x48: return TP=15; break; //F
+                case 0x88: return TP=13; break; //D
+            }
+      }
+
+      return TP=16;   //Teclado sin Presionar
+}
 
 void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
 {
@@ -128,25 +164,31 @@ void inittask (void)
       TRISA.RA0=1; //Bit 0 del Puerto A como entrada 
       ANSEL.RA0=1; //Bit O del Puerto A como entrada analoga.
       
-      ADCON0.ADCS1=1; //Selección del Oscilador Interno FRC
-      ADCON0.ADCS0=1;             //Selección del canal 0 de forma predeterminada
+      ADCON0.ADCS1=1; //Selecciï¿½n del Oscilador Interno FRC
+      ADCON0.ADCS0=1;             //Selecciï¿½n del canal 0 de forma predeterminada
       
       ADCON1.ADFM=1; //Justificado a la Derecha
-                     //Selección predefinada del Vref (VDD a VSS)
+                     //Selecciï¿½n predefinada del Vref (VDD a VSS)
       ADCON0.ADON=1; //Encendido del ADC.
+
+      //Inicializacion del Teclado Matricial
+      ANSELH=0x00;        //Configurando Entradas Digitales en PORTB.
+      Teclado_Dir=0xF0;  //Nibble Alto Entrada | Bajo Salida
+                                 //C1 C2 C3 C4 | F1 F2 F3 F4
 
 }
 
 void  task1ms (void)
 {
-      PORTD.RD5 = ~PORTD.RD5;
+      /*TODO*/
+      /*NO USAR ESTA FUNCION PUES TENEMOS DELAY Y LO ROMPIMOS*/
+      /*QUITAR TODOS LOS DELAYS ANTES DE USAR ESTA FUNCION*/
 
 }
 
 void  task10ms (void)
 {
-      //PORTD.RD5 = ~PORTD.RD5;
-
+      PORTD.RD5 = ~PORTD.RD5;
 
 
 }
@@ -154,6 +196,8 @@ void  task10ms (void)
 void  task100ms (void)
 {
       //PORTD.RD5 = ~PORTD.RD5;
+      cuenta = Tecla_Presionada();
+
       displayControl();
       
       ADCConversionLDR();
