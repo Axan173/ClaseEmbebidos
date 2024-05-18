@@ -7,7 +7,7 @@ volatile char OSTaskEnable = 0;
 
 void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
 {
-     static char estadodesecuencia = 0;
+     static char estadodesecuencia = 5;
      static long cuentadepasos = 0; 
 
      switch (estadodesecuencia){
