@@ -10,21 +10,6 @@ void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
      static char estadodesecuencia = 0;
      static long cuentadepasos = 0; 
 
-        /*// Sentido horario
-        PORTD &= 0xF0;
-        PORTD |= 0b1001; // Paso 1
-        delay_ms(10);
-        PORTD &= 0xF0;
-        PORTD |= 0b0011; // Paso 2
-        delay_ms(10);
-        PORTD &= 0xF0;
-        PORTD |= 0b0110; // Paso 3
-        delay_ms(10);
-        PORTD &= 0xF0;
-        PORTD |= 0b1100; // Paso 4
-        delay_ms(10);*/
-
-
      switch (estadodesecuencia){
             case 0:
               PORTD &= 0xF0;
@@ -41,13 +26,20 @@ void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
             case 9:
               PORTD &= 0xF0;
               PORTD |= 0b1100; // Paso 4
-              estadodesecuencia = 0;
             break;
             default:
             break;
      }
      
-     estadodesecuencia +=1;
+     if(direcciongiro == 1)
+     {
+            estadodesecuencia = (estadodesecuencia < 9)?(estadodesecuencia+1):(0);
+     }
+     else
+     {
+            estadodesecuencia = (estadodesecuencia > 0)? (estadodesecuencia-1):(9);
+     }
+
 }
 
 void inittask (void)
