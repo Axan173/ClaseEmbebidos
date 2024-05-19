@@ -20,6 +20,13 @@ void ADCConversionLDR(void)
 
 }
 
+void Mangueras()
+{
+    
+}
+
+
+
 unsigned char Tecla_Presionada(void)
 {     
       unsigned char Filas;    //Filas Teclado
@@ -221,6 +228,10 @@ void inittask (void)
       TRISD.RD5=0;         //Activaci�n de la salida de la terminal
       Periodo(256);
 
+      //Inicializacion LEDs para Mangueras
+      TRISE.RC3 = 0x00; // Puerto E BIt 3 como salida para la manguera 1 Agua
+      TRISE.RC1 = 0x00; // Puerto E Bit 1 como salida para la manguera 2 Pesticida
+      TRISE.RC2 = 0x00; // Puerto E Bit 2 como salida para la manguera 3 Fertilizante
 }
 
 void  task1ms (void)
@@ -233,7 +244,7 @@ void  task1ms (void)
 
 void  task10ms (void)
 {
-
+      Mangueras();
 
 }
 
