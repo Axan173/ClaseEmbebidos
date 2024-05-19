@@ -251,7 +251,7 @@ void  task1ms (void)
 
 void  task10ms (void)
 {
-      Mangueras();
+
 
 }
 
@@ -264,6 +264,8 @@ void  task100ms (void)
       ADCConversionLDR();
       
       Ancho_Pulso(300); // 0 a 1024 donde 1024 es 100% de ancho de pulso
+
+      Mangueras();
 }
 
 //set the configuration bits: internal OSC, everything off except MCLR
