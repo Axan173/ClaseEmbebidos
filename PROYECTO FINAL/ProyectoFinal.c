@@ -313,7 +313,7 @@ void interrupt()
 
 int main()
 {
-    TRISA = 0xFF;   //set all digital I/O to inputs
+    TRISA = 0xC3;   //set all digital I/O to inputs
     TRISB = 0xFF;
     TRISC = 0xFF;
 
