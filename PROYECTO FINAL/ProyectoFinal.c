@@ -12,7 +12,11 @@ void ADCConversionLDR(void)
       ADCON0.GO_DONE=1; //Inicio de Conversi�n
       while(ADCON0.GO_DONE){}; //TODO quitar esta basura :)
 
-      //cuenta = ((ADRESH&0x3)<<8) | (ADRESL&0x00FF);
+      cuenta = ((ADRESH&0x3)<<8) | (ADRESL&0x00FF);
+      if (cuenta > 999) {
+          cuenta = 999;
+      }
+
 
 }
 
@@ -124,7 +128,7 @@ void displayControl(void)
         }
         LCD_Sprint(&TEXTO1,0,1);
         LCD_Nprint(&cuenta,0,11);
-        cuenta--;
+        //cuenta--;
         refreshRate=0;
     }
     
