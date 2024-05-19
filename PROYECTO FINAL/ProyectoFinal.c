@@ -126,24 +126,27 @@ void Periodo(int t_useg)   //Per�odo de la se�al
 
 void displayControl(void)
 {
-    volatile int i=0;
-    volatile static int refreshRate = 0;
-    
-    if(refreshRate == 5)
-    {
-        if(i==0){
-           LCD_Write(0x04,1,1);
-           LCD_Write(0x04,1,5);
-           LCD_Write(0x04,1,9);
-           LCD_Write(0x04,1,13);
 
-           LCD_Write(0x01,1,3);
-           LCD_Write(0x02,1,7);
-           LCD_Write(0x03,1,11);
-           i++;
-        }
-        else
-        {
+    volatile static int refreshRate = 0;
+    volatile static unsigned char displayStateMachine = 0;
+    
+    if(refreshRate == 2 && displayStateMachine == 0)
+    {
+
+            LCD_Write(0x04,1,1);
+            LCD_Write(0x04,1,5);
+            LCD_Write(0x04,1,9);
+            LCD_Write(0x04,1,13);
+
+            LCD_Write(0x01,1,3);
+            LCD_Write(0x02,1,7);
+            LCD_Write(0x03,1,11);
+
+            refreshRate=0;
+            displayStateMachine = 1;
+    }
+    else if(refreshRate == 2 && displayStateMachine == 1)
+    {
            LCD_Write(0x04,1,3);
            LCD_Write(0x04,1,7);
            LCD_Write(0x04,1,11);
@@ -152,12 +155,20 @@ void displayControl(void)
            LCD_Write(0x06,1,5);
            LCD_Write(0x07,1,9);
            LCD_Write(0x08,1,13);
-           i=0;
-        }
-        LCD_Sprint(&TEXTO1,0,1);
-        LCD_Nprint(&cuenta,0,11);
-        //cuenta--;
-        refreshRate=0;
+
+            refreshRate=0;
+            displayStateMachine = 2;
+    }
+    else if(refreshRate == 2 && displayStateMachine == 2)
+    {
+            LCD_Sprint(&TEXTO1,0,1);
+            LCD_Nprint(&cuenta,0,11);
+            //cuenta--;
+            refreshRate=0;
+            displayStateMachine = 0;
+    }
+    else
+    {
     }
     
     refreshRate++;
@@ -259,7 +270,7 @@ void  task100ms (void)
 {
       //cuenta = Tecla_Presionada();
 
-      //displayControl(); // Tiene un bug que causa que se distorsionen las se�ales
+      displayControl(); // Tiene un bug que causa que se distorsionen las se�ales
       
       ADCConversionLDR();
       
