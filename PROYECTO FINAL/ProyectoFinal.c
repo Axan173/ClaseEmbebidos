@@ -111,7 +111,7 @@ void Periodo(int t_useg)   //Per�odo de la se�al
 {
      //De 1 useg a 256 usegs
      //La frecuencia en el oscilador es de 4MHZ
-     //Se considera la pre-escala de TMR2 1:1
+     //Se considera la pre-escala de TMR2 1:16
      PR2=(t_useg-1);
 }
 
@@ -245,7 +245,7 @@ void  task100ms (void)
       
       ADCConversionLDR();
       
-      Ancho_Pulso(100);
+      Ancho_Pulso(300); // 0 a 1024 donde 1024 es 100% de ancho de pulso
 }
 
 //set the configuration bits: internal OSC, everything off except MCLR
