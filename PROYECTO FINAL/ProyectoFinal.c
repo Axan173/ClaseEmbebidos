@@ -229,9 +229,11 @@ void inittask (void)
       Periodo(256);
 
       //Inicializacion LEDs para Mangueras
-      TRISE.RC3 = 0x00; // Puerto E BIt 3 como salida para la manguera 1 Agua
-      TRISE.RC1 = 0x00; // Puerto E Bit 1 como salida para la manguera 2 Pesticida
-      TRISE.RC2 = 0x00; // Puerto E Bit 2 como salida para la manguera 3 Fertilizante
+      TRISE.RE3 = 0x00; // Puerto E BIt 3 como salida para la manguera 1 Agua
+      TRISE.RE1 = 0x00; // Puerto E Bit 1 como salida para la manguera 2 Pesticida
+      TRISE.RE2 = 0x00; // Puerto E Bit 2 como salida para la manguera 3 Fertilizante
+
+
 }
 
 void  task1ms (void)
