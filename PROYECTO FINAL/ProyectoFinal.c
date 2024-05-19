@@ -217,7 +217,12 @@ void inittask (void)
       CCP1CON.CCP1M3=1;    //Modo PWM P1A,P1C,P1B,P1D activas en Alto.
       CCP1CON.CCP1M2=1;
 
+
+      PSTRCON.STRA=0;      //P1A as port pin
       PSTRCON.STRB=1;      //P1B activa en RD5
+      PSTRCON.STRC=0;      //P1C as port pin
+      PSTRCON.STRD=0;      //P1D as port pin
+
       PSTRCON.STRSYNC=1;   //Steering Sync Bit on next PWM Period
 
       //Pre-escala del Timer2 1:1
