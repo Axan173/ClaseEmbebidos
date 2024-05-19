@@ -22,10 +22,10 @@ void ADCConversionLDR(void)
 
 void Mangueras()
 {
-    
+      PORTE.RE0 = 1; // Manguera 1
+      PORTE.RE1 = 1; // Manguera 2
+      PORTE.RE2 = 1; // Manguera 3
 }
-
-
 
 unsigned char Tecla_Presionada(void)
 {     
