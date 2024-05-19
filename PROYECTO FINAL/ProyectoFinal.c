@@ -96,6 +96,27 @@ void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
 }
 
 
+void Ancho_Pulso(int ancho)         //Ancho de Pulso
+{    
+    // De 0 a 1023 partes equivalentes de 0 a 100%
+     //La frecuencia en el oscilador es de 4MHZ
+     //Se considera la pre-escala de TMR2 1:1
+    CCP1CON |=  ((ancho&0x0003)<<4);
+    CCPR1L  =   ancho>>2;
+} 
+
+
+
+void Periodo(int t_useg)   //Per�odo de la se�al
+{
+     //De 1 useg a 256 usegs
+     //La frecuencia en el oscilador es de 4MHZ
+     //Se considera la pre-escala de TMR2 1:1
+     PR2=(t_useg-1);
+}
+
+
+
 void displayControl(void)
 {
     volatile int i=0;
@@ -180,6 +201,26 @@ void inittask (void)
       Teclado_Dir=0xF0;  //Nibble Alto Entrada | Bajo Salida
                                  //C1 C2 C3 C4 | F1 F2 F3 F4
 
+
+      // Configuracion del PWM
+      
+
+      CCP1CON.P1M1=0;      //PWM Single output, P1A modulada;P1B,P1C y P1D como I/O.
+      CCP1CON.P1M0=0;
+      CCP1CON.CCP1M3=1;    //Modo PWM P1A,P1C,P1B,P1D activas en Alto.
+      CCP1CON.CCP1M2=1;
+
+      PSTRCON.STRB=1;      //P1B activa en RD5
+      PSTRCON.STRSYNC=1;   //Steering Sync Bit on next PWM Period
+
+      //Pre-escala del Timer2 1:1
+      PIR1.TMR2IF=0;       //Limpieza de la Bandera de interrupci�n del TMR2    
+      T2CON.TMR2ON=1;      //Activaci�n del TMR2
+      T2CON.T2CKPS1=1;     //Pre-escala 1:16 Prescaler
+      T2CON.T2CKPS0=1;     //Pre-escala 1:16 Prescaler
+      TRISD.RD5=0;         //Activaci�n de la salida de la terminal
+      Periodo(256);
+
 }
 
 void  task1ms (void)
@@ -192,19 +233,19 @@ void  task1ms (void)
 
 void  task10ms (void)
 {
-      PORTD.RD5 = ~PORTD.RD5;
 
 
 }
 
 void  task100ms (void)
 {
-      //PORTD.RD5 = ~PORTD.RD5;
       //cuenta = Tecla_Presionada();
 
-      displayControl();
+      //displayControl(); // Tiene un bug que causa que se distorsionen las se�ales
       
       ADCConversionLDR();
+      
+      Ancho_Pulso(100);
 }
 
 //set the configuration bits: internal OSC, everything off except MCLR
@@ -226,7 +267,6 @@ void interrupt()
 
     if(myCount==8)
     {
-        //PORTD.RD5 = ~PORTD.RD5; //Toggle the LED
         Ostickcounter++;
         myCount = 0;
         
