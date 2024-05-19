@@ -148,6 +148,7 @@ unsigned char DB;   //Variable para el manejo de Instrucciones
 unsigned char unidades=0;  //Variable para las Unidades
 unsigned char decenas=0;  //Variable para las Decenas
 unsigned char centenas=0;  //Variable para las Centenas
+volatile static unsigned char myLCD_Bus_Data;  //Variable para el manejo de Datos
 volatile unsigned char TEXTO1[]={" CONTEO:  \n"};
 unsigned char SET_CURSOR_DDRAM[2][16]={{0x80,0x81,0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x89,0x8A,0x8B,0x8C,0x8D,0x8E,0x8F},{0xC0,0xC1,0xC2,0xC3,0xC4,0xC5,0xC6,0xC7,0xC8,0xC9,0xCA,0xCB,0xCC,0xCD,0xCE,0xCF}};
 unsigned char FIG1[]={F1,F2,F3,F4,F5,F6,F7,F8};
@@ -187,8 +188,10 @@ void LCD_Init_Figure(void);
 
 void LCD_set(unsigned char *LCD_Ctrl_PORT,unsigned char *LCD_Bus_Data,unsigned char *LCD_Bus_PORT,unsigned char *LCD_Ctrl_Data){ //*****  CONDICION INICIAL EN EL PUERTO PARA EL LCD    ****
         ANSEL=0;
-        *LCD_Ctrl_Data&=(0<<RS|0<<RW|0<<E);
-        *LCD_Bus_Data=(1<<DB5|1<<DL);
+        myLCD_Bus_Data&=(0<<RS|0<<RW|0<<E);
+        myLCD_Bus_Data=(1<<DB5|1<<DL);
+        PORTC = myLCD_Bus_Data;
+        PORTA = ((myLCD_Bus_Data) >> 2);
         *LCD_Ctrl_PORT&=(0<<RS|0<<RW|0<<E);
         *LCD_Bus_PORT=0;
         //delay_ms(50);
@@ -201,11 +204,17 @@ void LCD_Reset(void){         //Funci�n de Reset
 
 void LCD_Function_Init(unsigned char lcd_dl){
      DB=(1<<DB5)|(lcd_dl<<DB4);
-     LCD_Ctrl_Data=(DB&0xf0)|(LCD_Bus_PORT&0x0f);
+     myLCD_Bus_Data=(DB&0xf0)|(myLCD_Bus_Data&0x0f);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      //LCDBusPort=DB;
-     LCD_Ctrl_Data |= (1<<E);
+     myLCD_Bus_Data |= (1<<E);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      delay_ms(1);
-     LCD_Ctrl_Data &=~((1<<E));
+     myLCD_Bus_Data &=~((1<<E));
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      delay_ms(1);
 }
 
@@ -257,19 +266,31 @@ ID=1 Increment Mode SH=1 Entire Shift On
 void LCD_Enable(unsigned char DB_){         //Se�al de Habilitaci�n
 #ifdef L_8Bits
      LCD_Bus_Data=DB_;
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
 #else
-     LCD_Bus_Data=(DB_&0xF0)|(LCD_Bus_Data&0x0F);
+     myLCD_Bus_Data=(DB_&0xF0)|(myLCD_Bus_Data&0x0F);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
 #endif
 //     LCD_Bus_Data=DB_;
-     LCD_Ctrl_Data |= (1<<E);
+     myLCD_Bus_Data |= (1<<E);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      delay_ms(2);
-     LCD_Ctrl_Data &=~((1<<E));
+     myLCD_Bus_Data &=~((1<<E));
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      delay_ms(2);
 #ifndef L_8Bits
-     LCD_Bus_Data=(DB_&0x0F)<<4|(LCD_Bus_Data&0x0F);
-     LCD_Ctrl_Data|=(1<<E);
+     myLCD_Bus_Data=(DB_&0x0F)<<4|(myLCD_Bus_Data&0x0F);
+     myLCD_Bus_Data|=(1<<E);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      delay_ms(1);
-     LCD_Ctrl_Data&=~(1<<E);
+     myLCD_Bus_Data&=~(1<<E);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      delay_ms(1);
 #endif
 }
@@ -279,7 +300,9 @@ void LCD_Nprint(unsigned int *valor,int x,int y) {
     centenas = (*valor / 100)+'0';
     decenas = ((*valor%100)/ 10)+'0';
     unidades = ((*valor%100)% 10)+'0';
-    LCD_Ctrl_Data |= (1 << RS); // RS en alto para enviar datos
+    myLCD_Bus_Data |= (1 << RS); // RS en alto para enviar datos
+    PORTC = myLCD_Bus_Data;
+    PORTA = ((myLCD_Bus_Data) >> 2);
     if(centenas!=(0+'0')){
        DB=centenas; // Extrae el �ltimo d�gito y convi�rtelo a caracter ASCII
        LCD_Enable(DB);
@@ -298,19 +321,25 @@ void LCD_Nprint(unsigned int *valor,int x,int y) {
      }
     DB=unidades; // Extrae el �ltimo d�gito y convi�rtelo a caracter ASCII
     LCD_Enable(DB);
-    LCD_Ctrl_Data &= ~(1 << RS); // RS en bajo al finalizar el env�o de datos while (i!=10)   {
+    myLCD_Bus_Data &= ~(1 << RS); // RS en bajo al finalizar el env�o de datos while (i!=10)   {
+    PORTC = myLCD_Bus_Data;
+    PORTA = ((myLCD_Bus_Data) >> 2);
 }
 
 void LCD_Sprint(unsigned char *string_buffer,int x,int y){
      unsigned char i=0;
      LCD_DDRAM_Set(x,y);
-     LCD_Ctrl_Data |=(1<<RS);
+     myLCD_Bus_Data |=(1<<RS);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      while((string_buffer[i]!='\n')){
            DB=string_buffer[i];
            LCD_Enable(DB);
            i++;
      }
-     LCD_Ctrl_Data &=~(1<<RS);
+     myLCD_Bus_Data &=~(1<<RS);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
 }
 
 void LCD_CGRAM_Set(unsigned char *patron,unsigned char address){
@@ -319,19 +348,29 @@ void LCD_CGRAM_Set(unsigned char *patron,unsigned char address){
      //LCD_Write(0x40|(address*8));//&comm,0,0);
      int i;
      DB=0x40|(address<<3);
-     LCD_Ctrl_Data |=(0<<RS);
+     myLCD_Bus_Data |=(0<<RS);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      LCD_Enable(DB);
      for(i=0;i<kfig;i++){
-             LCD_Ctrl_Data |=(1<<RS);
+             myLCD_Bus_Data |=(1<<RS);
+             PORTC = myLCD_Bus_Data;
+             PORTA = ((myLCD_Bus_Data) >> 2);
              DB=patron[i];
              LCD_Enable(DB);
      }
-     LCD_Ctrl_Data &=~(1<<RS);
+     myLCD_Bus_Data &=~(1<<RS);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
 }
 
 void LCD_Write(unsigned char *string_buffer,int x,int y){
      LCD_DDRAM_Set(x,y);
-     LCD_Ctrl_Data |=(1<<RS);
+     myLCD_Bus_Data |=(1<<RS);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      LCD_Enable(string_buffer);
-     LCD_Ctrl_Data &=~(1<<RS);
+     myLCD_Bus_Data &=~(1<<RS);
+     PORTC = myLCD_Bus_Data;
+     PORTA = ((myLCD_Bus_Data) >> 2);
      }
