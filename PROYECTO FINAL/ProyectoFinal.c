@@ -269,7 +269,8 @@ void displayControl(void)
     }
     else if(refreshRate == 2 && displayStateMachine == 2)
     {
-            LCD_Sprint(&TEXTO1,0,1);
+            //LCD_Sprint(&TEXTO1,0,1);
+            LCD_Nprint(&cuenta2,0,1);
             LCD_Nprint(&cuenta,0,11);
             //cuenta--;
             refreshRate=0;
@@ -300,7 +301,7 @@ void inittask (void)
         LCD_On_Off(Dsp_ON,Cur_ON,Blk_OFF);
         LCD_Clear();
         LDC_EntryMode_Set(Mode_INC,EntireShift_OFF);
-        LCD_Sprint(&TEXTO1,0,1);
+        //LCD_Sprint(&TEXTO1,0,1);
         LCD_CGRAM_Set(&FIG1,1);
         LCD_CGRAM_Set(&FIG2,2);
         LCD_CGRAM_Set(&FIG3,3);
@@ -370,6 +371,8 @@ void  task1ms (void)
       /*NO USAR ESTA FUNCION PUES TENEMOS DELAY Y LO ROMPIMOS*/
       /*QUITAR TODOS LOS DELAYS ANTES DE USAR ESTA FUNCION*/
 
+      StepperMotorControl(1);
+
 }
 
 void  task10ms (void)
@@ -380,15 +383,15 @@ void  task10ms (void)
 
 void  task100ms (void)
 {
-      //cuenta = Tecla_Presionada();
+      cuenta2 = Tecla_Presionada();
 
-      // displayControl(); // Tiene un bug que causa que se distorsionen las se�ales
+      displayControl(); // Tiene un bug que causa que se distorsionen las se�ales
       
-      // ADCConversionLDR();
+      ADCConversionLDR();
       
-      // Ancho_Pulso(300); // 0 a 1024 donde 1024 es 100% de ancho de pulso
+      Ancho_Pulso(300); // 0 a 1024 donde 1024 es 100% de ancho de pulso
 
-      // Mangueras();
+      Mangueras();
 
       I2C_DS1307R();
 }

@@ -144,6 +144,7 @@
 #define kfig (8*figs)
 
 unsigned int cuenta=999;
+unsigned int cuenta2=999;
 unsigned char DB;   //Variable para el manejo de Instrucciones
 unsigned char unidades=0;  //Variable para las Unidades
 unsigned char decenas=0;  //Variable para las Decenas
