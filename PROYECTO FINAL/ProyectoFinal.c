@@ -173,41 +173,42 @@ unsigned char Tecla_Presionada(void)
       return TP=16;   //Teclado sin Presionar
 }
 
-void StepperMotorControl (int direcciongiro) // 0 para derecha 1 para izquierda
+void StepperMotorControl (int direcciongiro,unsigned char paro) // 0 para derecha 1 para izquierda
 {
      static char estadodesecuencia = 5;
      static long cuentadepasos = 0; 
-
-     switch (estadodesecuencia){
-            case 0:
-              PORTD &= 0xF0;
-              PORTD |= 0b1001; // Paso 1
-            break;
-            case 3:
-              PORTD &= 0xF0;
-              PORTD |= 0b0011; // Paso 2
-            break;
-            case 6:
-              PORTD &= 0xF0;
-              PORTD |= 0b0110; // Paso 3
-            break;
-            case 9:
-              PORTD &= 0xF0;
-              PORTD |= 0b1100; // Paso 4
-            break;
-            default:
-            break;
-     }
-     
-     if(direcciongiro == 1)
-     {
-            estadodesecuencia = (estadodesecuencia < 9)?(estadodesecuencia+1):(0);
-     }
-     else
-     {
-            estadodesecuencia = (estadodesecuencia > 0)? (estadodesecuencia-1):(9);
-     }
-
+      if (paro == 0)
+      {   
+            switch (estadodesecuencia){
+                        case 0:
+                        PORTD &= 0xF0;
+                        PORTD |= 0b1001; // Paso 1
+                        break;
+                        case 3:
+                        PORTD &= 0xF0;
+                        PORTD |= 0b0011; // Paso 2
+                        break;
+                        case 6:
+                        PORTD &= 0xF0;
+                        PORTD |= 0b0110; // Paso 3
+                        break;
+                        case 9:
+                        PORTD &= 0xF0;
+                        PORTD |= 0b1100; // Paso 4
+                        break;
+                        default:
+                        break;
+            }
+            
+            if(direcciongiro == 1)
+            {
+                        estadodesecuencia = (estadodesecuencia < 9)?(estadodesecuencia+1):(0);
+            }
+            else
+            {
+                        estadodesecuencia = (estadodesecuencia > 0)? (estadodesecuencia-1):(9);
+            }
+      }
 }
 
 
@@ -365,14 +366,52 @@ void inittask (void)
 
 }
 
+
+
+void controlventana (void)
+{
+      static bandera = 0;
+      int direccion;
+      static char PP=0;
+
+      if (cuenta <= 500)
+      {
+            direccion= 0; // abrir ventana
+            
+            if (bandera >= 2500 )
+            {
+                  PP = 1;                       
+            }
+            else
+            {
+                  bandera ++;
+                  PP = 0;
+            }
+      }
+
+      else if (cuenta >=501 )
+      {
+            direccion = 1; //cerrar ventana
+
+            if (bandera == 0)
+            {
+                  PP = 1;
+            }
+            else
+            {
+                  bandera--;
+                  PP = 0;
+            }   
+      }      
+      StepperMotorControl(direccion,PP);
+}
+
 void  task1ms (void)
 {
       /*TODO*/
       /*NO USAR ESTA FUNCION PUES TENEMOS DELAY Y LO ROMPIMOS*/
       /*QUITAR TODOS LOS DELAYS ANTES DE USAR ESTA FUNCION*/
-
-      StepperMotorControl(1);
-
+     controlventana();
 }
 
 void  task10ms (void)
