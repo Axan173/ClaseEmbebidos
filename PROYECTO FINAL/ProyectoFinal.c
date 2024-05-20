@@ -1,10 +1,20 @@
 //#include <xc.h>    //Use this to include the device header for your PIC.
 #include "biblioteca_lcd1.h"
 #include "Teclado.h"
+#include "I2C.h" 
+
 #define _XTAL_FREQ 4000000  //4MHz, which is default
 
 
 volatile char OSTaskEnable = 0;
+unsigned char Seg   = 0x50; 
+unsigned char Min   = 0x59; 
+unsigned char Hour  = 0x23; 
+unsigned char Day   = 0x22; 
+unsigned char Date  = 0x28; 
+unsigned char Month = 0x05; 
+unsigned char Year  = 0x24; 
+unsigned char TDay  = 0x00;
 
 
 void ADCConversionLDR(void)
@@ -25,6 +35,104 @@ void Mangueras()
       PORTE.RE0 = 1; // Manguera 1
       PORTE.RE1 = 1; // Manguera 2
       PORTE.RE2 = 1; // Manguera 3
+}
+
+
+void I2C_init(void) /* Inicializa I2C */ 
+{    
+      I2C_port(); //Configuración de Dirección de Terminales    
+      SSPCON |= Master_Mode_Clock;    //Modo Maestro con Control del Reloj 
+      SSPCON.SSPEN =1; //Habilita el Módulo MSSP en modo I2C 
+      SSPADD = SSPADD_Speed; //Velocidad del I2C 
+      SSPSTAT.SMP = 1; //Control de Velocidad Inhabilitado 
+}
+
+void I2C_port(void) /* Configura puerto para I2C */ 
+{     //Configurar terminales SCL y SDA como entradas 
+      SCL_Dir = 1; //Salida de Reloj 
+      SDA_Dir = 1; //Entrada/Salida de Reloj 
+}
+
+void I2C_wait(void) /* Espera a que las funciones terminen */ 
+{    
+      while( SSPSTAT.R_W | SSPCON2.ACKEN | SSPCON2.RCEN | SSPCON2.PEN | SSPCON2.RSEN | SSPCON2.SEN); 
+      return; 
+}
+
+void I2C_start(void) 
+{    
+      SSPCON2.SEN = 1; //Inicia comunicación 
+      I2C_wait(); 
+}
+
+void I2C_restart(void) 
+{    
+      SSPCON2.RSEN = 1; //Reinicia comunicación 
+      I2C_wait(); 
+} 
+
+void I2C_stop(void) 
+{    
+      SSPCON2.PEN = 1; //Paro de comunicación 
+      I2C_wait(); 
+} 
+
+void I2C_write(unsigned char AData) 
+{    
+      SSPBUF = AData;     //DirecciÛn o Dato al SSPBUF 
+      I2C_wait(); 
+}
+
+unsigned char I2C_read(unsigned char ack) 
+{    
+      unsigned char buffer; 
+      I2C_wait(); 
+      SSPCON2.RCEN = 1; //Inicia recepciÛn 
+      I2C_wait(); 
+      buffer = SSPBUF; 
+      I2C_wait(); 
+      SSPCON2.ACKDT = ack; //Recibe el Acknowledge 
+      SSPCON2.ACKEN = 1; //Habilita el envÌo del Acknowledge 
+      return buffer; 
+}
+
+
+
+void I2C_DS1307W(void) 
+{      
+      /* Escritura */
+      I2C_init(); //Configuración I2C
+     I2C_start(); //Inicio Comunicación 
+     I2C_write(DS1307_W);  //Dirección + Write 
+     I2C_write(0x00);      //Dirección Inicial (Inicia Puntero del Esclavo) 
+     I2C_write(Seg);    //Escritura de Segundos (00-59)      
+     I2C_write(Min);    //Escritura de Minutos (00-59)      
+     I2C_write(Hour);      //Escritura de Horas (00-23)      
+     I2C_write(Day); //Escritura de Día de la Semana (01-07, Dom-Lun)      
+     I2C_write(Date);      //Escritura de Día del Mes (00-31)      
+     I2C_write(Month);     //Escritura de Mes (01-12)      
+     I2C_write(Year);      //Escritura de A–o (00-99, 2000-2099)      
+     I2C_stop(); 
+} 
+
+
+
+
+void I2C_DS1307R(void) 
+{      /* Lectura */ 
+      I2C_start(); //Inicio Comunicación 
+      I2C_write(DS1307_W);   //Dirección + Write 
+      I2C_write(0x00); //Dirección Inicial(Inicia Puntero del Esclavo) 
+      I2C_restart(); //Reinicio de Comunicación 
+      I2C_write(DS1307_R);   //Dirección + Read 
+      Seg = I2C_read(ACK);   //Lectura de Segundos 
+      Min = I2C_read(ACK);   //Lectura de Minutos 
+      Hour = I2C_read(ACK);  //Lectura de Horas 
+      Day = I2C_read(ACK);  //Lectura de Día (Domingo...S‡bado) 
+      Date = I2C_read(ACK);  //Lectura de Día del Mes 
+      Month = I2C_read(ACK); //Lectura de MES (Enero...Diciembre) 
+      Year = I2C_read(NACK); //Lectura de Año 
+      I2C_stop();            //Fin de Comunicación 
 }
 
 unsigned char Tecla_Presionada(void)
@@ -250,6 +358,10 @@ void inittask (void)
       TRISE.RE2 = 0x00; // Puerto E Bit 2 como salida para la manguera 3 Fertilizante
 
 
+      //Inicializacion de I2C
+      I2C_DS1307W(); //Inicializa el DS1307
+
+
 }
 
 void  task1ms (void)
@@ -270,13 +382,15 @@ void  task100ms (void)
 {
       //cuenta = Tecla_Presionada();
 
-      displayControl(); // Tiene un bug que causa que se distorsionen las se�ales
+      // displayControl(); // Tiene un bug que causa que se distorsionen las se�ales
       
-      ADCConversionLDR();
+      // ADCConversionLDR();
       
-      Ancho_Pulso(300); // 0 a 1024 donde 1024 es 100% de ancho de pulso
+      // Ancho_Pulso(300); // 0 a 1024 donde 1024 es 100% de ancho de pulso
 
-      Mangueras();
+      // Mangueras();
+
+      I2C_DS1307R();
 }
 
 //set the configuration bits: internal OSC, everything off except MCLR
