@@ -2,10 +2,56 @@ main
 	__CC2DW
 		____DoICP
 	inittask
+		LCD_set
+		LCD_Reset
+		LCD_Function_Init
+		LCD_Function_Set
+			LCD_Enable
+		LCD_On_Off
+			LCD_Enable
+		LCD_Clear
+		LDC_EntryMode_Set
+		LCD_CGRAM_Set
+			LCD_Enable
+		Periodo
+		I2C_DS1307W
+			I2C_init
+				I2C_port
+			I2C_start
+				I2C_wait
+			I2C_write
+				I2C_wait
+			I2C_stop
+				I2C_wait
 	task1ms
 		StepperMotorControl
 	task10ms
 	task100ms
+		Tecla_Presionada
+		displayControl
+			LCD_Write
+				LCD_DDRAM_Set
+					LCD_Enable
+				LCD_Enable
+			LCD_Nprint
+				LCD_DDRAM_Set
+					LCD_Enable
+				Div_16X16_U
+				LCD_Enable
+		ADCConversionLDR
+		Ancho_Pulso
+		Mangueras
+		I2C_DS1307R
+			I2C_start
+				I2C_wait
+			I2C_write
+				I2C_wait
+			I2C_restart
+				I2C_wait
+			I2C_read
+				I2C_wait
+			I2C_stop
+				I2C_wait
 interrupt
 	Div_16x16_S
 		Div_16x16_S_L

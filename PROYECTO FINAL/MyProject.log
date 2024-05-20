@@ -4,12 +4,29 @@ diagnostics: 0	122	Compilation Started	P16F887.c
 diagnostics: 967	123	Compiled Successfully	P16F887.c
 diagnostics: 0	122	Compilation Started	__Lib_Delays.c
 diagnostics: 123	123	Compiled Successfully	__Lib_Delays.c
-diagnostics: 0	122	Compilation Started	ProyectoFinal.c
-diagnostics: 187	123	Compiled Successfully	ProyectoFinal.c
-diagnostics: 0	127	All files Compiled in 47 ms	 
-hint: 0	1144	Used RAM (bytes): 16 (5%)  Free RAM (bytes): 336 (95%)	Used RAM (bytes): 16 (5%)  Free RAM (bytes): 336 (95%)
-hint: 0	1144	Used ROM (program words): 404 (5%)  Free ROM (program words): 7788 (95%)	Used ROM (program words): 404 (5%)  Free ROM (program words): 7788 (95%)
+hint: 23	1354	 warning: "/*" within comment      /* RS RW  DB7  DB6  DB5    DB4   DB3  DB2 DB1 DB0  ar cur_on_off,unsigned char blk_on_off){     from C:/gitRepos/ClaseEmbebidos/PROYECTO FINAL/ProyectoFinal.c: 2:    #include "biblioteca_lcd1.h"	c:\gitrepos\claseembebidos\proyecto final\biblioteca_lcd1.h
+diagnostics: 0	122	Compilation Started	biblioteca_lcd1.h
+warning: 194	1508	Implicit conversion of int to ptr	biblioteca_lcd1.h
+warning: 373	1506	Implicit conversion of pointer to int	biblioteca_lcd1.h
+warning: 244	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 245	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 246	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 247	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 249	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 250	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 251	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 258	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 259	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 260	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 262	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 263	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 264	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+warning: 265	1508	Implicit conversion of int to ptr	ProyectoFinal.c
+diagnostics: 499	123	Compiled Successfully	ProyectoFinal.c
+diagnostics: 0	127	All files Compiled in 63 ms	 
+hint: 0	1144	Used RAM (bytes): 142 (40%)  Free RAM (bytes): 210 (60%)	Used RAM (bytes): 142 (40%)  Free RAM (bytes): 210 (60%)
+hint: 0	1144	Used ROM (program words): 2294 (28%)  Free ROM (program words): 5898 (72%)	Used ROM (program words): 2294 (28%)  Free ROM (program words): 5898 (72%)
 diagnostics: 0	125	Project Linked Successfully	MyProject.mcppi
-diagnostics: 0	128	Linked in 16 ms	 
+diagnostics: 0	128	Linked in 31 ms	 
 diagnostics: 0	129	Project 'MyProject.mcppi' completed: 219 ms	 
-diagnostics: 0	103	Finished successfully: 16 may. 2024, 22:50:16	MyProject.mcppi
+diagnostics: 0	103	Finished successfully: 19 may. 2024, 18:45:43	MyProject.mcppi
