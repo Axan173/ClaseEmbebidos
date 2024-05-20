@@ -233,8 +233,11 @@ void Periodo(int t_useg)   //Per�odo de la se�al
 
 
 
-void displayControl(void)
+void displayControl(char tecla)
 {
+    char TEXTO3 []={" Menu: \n"};
+    char TEXTO4 []={" Pulsa Para \n"}; 
+    char TEXTO5 []={" Continuar \n"};  
 
     volatile static int refreshRate = 0;
     volatile static unsigned char displayStateMachine = 0;
@@ -242,39 +245,61 @@ void displayControl(void)
     if(refreshRate == 2 && displayStateMachine == 0)
     {
 
-            LCD_Write(0x04,1,1);
-            LCD_Write(0x04,1,5);
-            LCD_Write(0x04,1,9);
-            LCD_Write(0x04,1,13);
+            // LCD_Write(0x04,1,1);
+            // LCD_Write(0x04,1,5);
+            // LCD_Write(0x04,1,9);
+            // LCD_Write(0x04,1,13);
 
-            LCD_Write(0x01,1,3);
-            LCD_Write(0x02,1,7);
-            LCD_Write(0x03,1,11);
+            // LCD_Write(0x01,1,3);
+            // LCD_Write(0x02,1,7);
+            // LCD_Write(0x03,1,11);
 
-            refreshRate=0;
+
+
+            refreshRate=0;                      //No borrar
             displayStateMachine = 1;
     }
     else if(refreshRate == 2 && displayStateMachine == 1)
     {
-           LCD_Write(0x04,1,3);
-           LCD_Write(0x04,1,7);
-           LCD_Write(0x04,1,11);
+      //      LCD_Write(0x04,1,3);
+      //      LCD_Write(0x04,1,7);
+      //      LCD_Write(0x04,1,11);
 
-           LCD_Write(0x05,1,1);
-           LCD_Write(0x06,1,5);
-           LCD_Write(0x07,1,9);
-           LCD_Write(0x08,1,13);
+      //      LCD_Write(0x05,1,1);
+      //      LCD_Write(0x06,1,5);
+      //      LCD_Write(0x07,1,9);
+      //      LCD_Write(0x08,1,13);
 
-            refreshRate=0;
+
+
+            refreshRate=0;          //No borrar
             displayStateMachine = 2;
     }
     else if(refreshRate == 2 && displayStateMachine == 2)
     {
-            //LCD_Sprint(&TEXTO1,0,1);
-            LCD_Nprint(&cuenta2,0,1);
-            LCD_Nprint(&cuenta,0,11);
-            //cuenta--;
-            refreshRate=0;
+            //LCD_Sprint(&TEXTO4,0,0);
+            //LCD_Sprint(&TEXTO5,1,0);
+            
+            //LCD_Sprint(&TEXTO3,1,1);
+            switch (tecla)
+            {
+                  case 1:
+                        LCD_Nprint(&cuenta,0,1);
+                  break;      
+                  
+                  default:
+                        
+                        LCD_Nprint(&cuenta2,1,1);
+                  break;    
+      
+            }
+            // LCD_Nprint(&cuenta2,0,1);
+            // LCD_Nprint(&cuenta,0,11);
+            
+            
+            
+            
+            refreshRate=0; //No borrar
             displayStateMachine = 0;
     }
     else
@@ -424,7 +449,7 @@ void  task100ms (void)
 {
       cuenta2 = Tecla_Presionada();
 
-      displayControl(); // Tiene un bug que causa que se distorsionen las se�ales
+      displayControl(cuenta2); // Tiene un bug que causa que se distorsionen las se�ales
       
       ADCConversionLDR();
       
