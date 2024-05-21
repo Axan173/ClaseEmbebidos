@@ -320,7 +320,18 @@ void displayControl(char tecla)
                   break;
                   case 3:
                         LCD_Nprint(&cuenta2,1,0);
+                  break;
+                  case 7:
+                        Ancho_Pulso(200); // 0 a 1024 donde 1024 es 100% de ancho de pulso
+                  break;
+                  case 8: 
+                        Ancho_Pulso(500); // 0 a 1024 donde 1024 es 100% de ancho de pulso
+                  break;
+                  case 9:
+                        Ancho_Pulso(900); // 0 a 1024 donde 1024 es 100% de ancho de pulso
                   break;      
+
+
                   
                   default:
                         LCD_Sprint(&HORA_STR,0,0);
@@ -524,8 +535,6 @@ void  task100ms (void)
       displayControl(cuenta2); // Tiene un bug que causa que se distorsionen las se�ales
       
       ADCConversionLDR();
-      
-      Ancho_Pulso(300); // 0 a 1024 donde 1024 es 100% de ancho de pulso
 
       Mangueras();
 
