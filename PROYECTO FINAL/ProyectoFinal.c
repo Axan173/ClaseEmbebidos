@@ -261,6 +261,9 @@ const unsigned char BORRAR_DISPLAY[]=     {"                \n"};
 const unsigned char TEMPERATURA_STR[]=    {" TEMPERATURA ES \n"};
 const unsigned char HORA_STR[]=           {"HOUR            \n"};
 const unsigned char FECHA_STR[]=          {"DATE            \n"};
+const unsigned char V1_STR[]=             {"VELOCIDAD 1     \n"};
+const unsigned char V2_STR[]=             {"VELOCIDAD 2     \n"};
+const unsigned char V3_STR[]=             {"VELOCIDAD 3     \n"};
 void displayControl(char tecla)
 {
     volatile unsigned int temp = 0;
@@ -322,12 +325,15 @@ void displayControl(char tecla)
                         LCD_Nprint(&cuenta2,1,0);
                   break;
                   case 7:
+                        LCD_Sprint(&V1_STR,0,0);
                         Ancho_Pulso(200); // 0 a 1024 donde 1024 es 100% de ancho de pulso
                   break;
-                  case 8: 
+                  case 8:
+                        LCD_Sprint(&V2_STR,0,0); 
                         Ancho_Pulso(500); // 0 a 1024 donde 1024 es 100% de ancho de pulso
                   break;
                   case 9:
+                        LCD_Sprint(&V3_STR,0,0);
                         Ancho_Pulso(900); // 0 a 1024 donde 1024 es 100% de ancho de pulso
                   break;      
 
