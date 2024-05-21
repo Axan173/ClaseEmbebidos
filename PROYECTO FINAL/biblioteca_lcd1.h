@@ -145,12 +145,14 @@
 
 unsigned int cuenta=999;
 unsigned int cuenta2=999;
+unsigned int temperatura=999;
 unsigned char DB;   //Variable para el manejo de Instrucciones
 unsigned char unidades=0;  //Variable para las Unidades
 unsigned char decenas=0;  //Variable para las Decenas
 unsigned char centenas=0;  //Variable para las Centenas
 volatile static unsigned char myLCD_Bus_Data;  //Variable para el manejo de Datos
 volatile unsigned char TEXTO1[]={" CONTEO:  \n"};
+volatile unsigned char TEXTO2 []={" Menu: \n"};
 unsigned char SET_CURSOR_DDRAM[2][16]={{0x80,0x81,0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x89,0x8A,0x8B,0x8C,0x8D,0x8E,0x8F},{0xC0,0xC1,0xC2,0xC3,0xC4,0xC5,0xC6,0xC7,0xC8,0xC9,0xCA,0xCB,0xCC,0xCD,0xCE,0xCF}};
 unsigned char FIG1[]={F1,F2,F3,F4,F5,F6,F7,F8};
 unsigned char FIG2[]={F9,F10,F11,F12,F13,F14,F15,F16};
@@ -178,7 +180,7 @@ void LCD_Enable(unsigned char DB_);   //Se�al de Habilitaci�n
 void LCD_Cadena1(int x, int y);//olatile unsigned char TEXTO1[]);  //Funci�n para imprimir cadena
 void delay_ms(unsigned int msegs);  //Funci�n de delay_msegs
 void LCD_Nprint(unsigned int *contador,int x, int y);
-void LCD_Sprint(unsigned char *string_buffer,int x,int y);
+void LCD_Sprint(const unsigned char *string_buffer,int x,int y);
 void LCD_CGRAM_Set(unsigned char *patron,unsigned char *address);
 void LCD_Write(unsigned char *string_buffer,int x,int y);
 void LCD_Init_Figure(void);
@@ -327,7 +329,7 @@ void LCD_Nprint(unsigned int *valor,int x,int y) {
     PORTA = ((myLCD_Bus_Data) >> 2);
 }
 
-void LCD_Sprint(unsigned char *string_buffer,int x,int y){
+void LCD_Sprint(const unsigned char *string_buffer,int x,int y){
      unsigned char i=0;
      LCD_DDRAM_Set(x,y);
      myLCD_Bus_Data |=(1<<RS);

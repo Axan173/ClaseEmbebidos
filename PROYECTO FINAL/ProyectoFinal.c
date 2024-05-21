@@ -127,7 +127,7 @@ unsigned char I2C_read(unsigned char ack)
 void I2C_DS1307W(void) 
 {      
       /* Escritura */
-      I2C_init(); //Configuración I2C
+     
      I2C_start(); //Inicio Comunicación 
      I2C_write(DS1307_W);  //Dirección + Write 
      I2C_write(0x00);      //Dirección Inicial (Inicia Puntero del Esclavo) 
@@ -264,13 +264,18 @@ const unsigned char FECHA_STR[]=          {"DATE            \n"};
 const unsigned char V1_STR[]=             {"VELOCIDAD 1     \n"};
 const unsigned char V2_STR[]=             {"VELOCIDAD 2     \n"};
 const unsigned char V3_STR[]=             {"VELOCIDAD 3     \n"};
+const unsigned char SET_STR[]=            {"SET HOUR        \n"};
+const unsigned char OK_STR[]=            {"ok\n"};
 void displayControl(char tecla)
 {
     volatile unsigned int temp = 0;
-
+    volatile static unsigned char cambiar_hora = 0;  
+    volatile static unsigned int cambiar_hora_digito = 0;
+    volatile static unsigned char enterpresionado = 0; 
     volatile static int refreshRate = 0;
     volatile static unsigned char displayStateMachine = 0;
-    
+    volatile static unsigned long horacompleta = 0;
+
     if(refreshRate == 2 && displayStateMachine == 0)
     {
 
@@ -309,76 +314,121 @@ void displayControl(char tecla)
             
             //Borrar Display
             LCD_Sprint(&BORRAR_DISPLAY,0,0);
-            LCD_Sprint(&BORRAR_DISPLAY,1,0);
             
-            switch (tecla)
+            if (cambiar_hora >= 1)
             {
-                  case 1:
-                        LCD_Nprint(&cuenta,0,1);
-                  break;
-                  case 2:
-                        LCD_Sprint(&TEMPERATURA_STR,0,0);
-                        temperatura = (unsigned int)((temperatura*5*100)/1024)+8;
-                        LCD_Nprint(&temperatura,1,8);
-                  break;
-                  case 3:
-                        LCD_Nprint(&cuenta2,1,0);
-                  break;
-                  case 7:
-                        LCD_Sprint(&V1_STR,0,0);
-                        Ancho_Pulso(200); // 0 a 1024 donde 1024 es 100% de ancho de pulso
-                  break;
-                  case 8:
-                        LCD_Sprint(&V2_STR,0,0); 
-                        Ancho_Pulso(500); // 0 a 1024 donde 1024 es 100% de ancho de pulso
-                  break;
-                  case 9:
-                        LCD_Sprint(&V3_STR,0,0);
-                        Ancho_Pulso(900); // 0 a 1024 donde 1024 es 100% de ancho de pulso
-                  break;      
+                  LCD_Sprint(&SET_STR,0,0);
+                  if ((cuenta2 != 16) && (cuenta2 != 13) && (cuenta2 != 11))
+                  {      
+                        cambiar_hora_digito = cuenta2;
+                        LCD_Nprint(&cambiar_hora_digito,1,0+((cambiar_hora-1)*2));
+                  }
+                  if ((cuenta2 == 11) && (enterpresionado == 0))
+                  {
+                        LCD_Sprint(&OK_STR,0,11);
 
+                        enterpresionado = 1;
+                        cambiar_hora++;
+                        horacompleta |= cambiar_hora_digito & 0x0F;
+                        horacompleta = horacompleta << 4;
+                  }
+                  if (cuenta2 == 13)
+                  {
+                        LCD_Sprint(&OK_STR,0,11);
+                        enterpresionado = 0;
+                  }
+                  if (cambiar_hora == 7)
+                  {
+                        Seg = horacompleta & 0x00FF;
+                        horacompleta = horacompleta >> 8;
+                        Min = horacompleta & 0x00FF;
+                        horacompleta = horacompleta >> 8;
+                        Hour = horacompleta & 0x00FF;
 
+                        // Hour = ((Hour & 0x0F) << 4) | ((Hour & 0xF0) >> 4);
+                        // Min = ((Min & 0x0F) << 4) | ((Min & 0xF0) >> 4);
+                        // Seg = ((Seg & 0x0F) << 4) | ((Seg & 0xF0) >> 4);
+
+                        
+                        
+                        cambiar_hora = 0;
+                        cambiar_hora_digito = 0;
+                        horacompleta = 0;
+                        enterpresionado = 0;
+                        I2C_DS1307W();
+                  }
                   
-                  default:
-                        LCD_Sprint(&HORA_STR,0,0);
-                        LCD_Sprint(&FECHA_STR,1,0);
-                        
-                        temp = Hour & 0x0F;  
-                        LCD_Nprint(&temp,0,5);
-                        temp = (Hour & 0xF0)>>4;
-                        LCD_Nprint(&temp,0,4);
+            }else
+            {     
+                  LCD_Sprint(&BORRAR_DISPLAY,1,0);
+                  switch (tecla)
+                  {
+                        case 1:
+                              LCD_Nprint(&cuenta,0,1);
+                        break;
+                        case 2:
+                              LCD_Sprint(&TEMPERATURA_STR,0,0);
+                              temperatura = (unsigned int)((temperatura*5*100)/1024)+8;
+                              LCD_Nprint(&temperatura,1,8);
+                        break;
+                        case 3:
+                              LCD_Nprint(&cuenta2,1,0);
+                        break;
+                        case 7:
+                              LCD_Sprint(&V1_STR,0,0);
+                              Ancho_Pulso(200); // 0 a 1024 donde 1024 es 100% de ancho de pulso
+                        break;
+                        case 8:
+                              LCD_Sprint(&V2_STR,0,0); 
+                              Ancho_Pulso(500); // 0 a 1024 donde 1024 es 100% de ancho de pulso
+                        break;
+                        case 9:
+                              LCD_Sprint(&V3_STR,0,0);
+                              Ancho_Pulso(900); // 0 a 1024 donde 1024 es 100% de ancho de pulso
+                        break;
+                        case 10:
+                              cambiar_hora = 1;      
+                        break;
 
-                        temp = Min & 0x0F;  
-                        LCD_Nprint(&temp,0,9);
-                        temp = (Min & 0xF0)>>4;
-                        LCD_Nprint(&temp,0,8);
-      
-                        temp = Seg & 0x0F;  
-                        LCD_Nprint(&temp,0,13);
-                        temp = (Seg & 0xF0)>>4;
-                        LCD_Nprint(&temp,0,12);
+                        default:
+                             
+                              temp = Hour & 0x0F;  
+                              LCD_Nprint(&temp,0,5);
+                              temp = (Hour & 0xF0)>>4;
+                              LCD_Nprint(&temp,0,4);
+                             
+                             
+                              temp = Min & 0x0F;  
+                              LCD_Nprint(&temp,0,9);
+                              temp = (Min & 0xF0)>>4;
+                              LCD_Nprint(&temp,0,8);
             
-                        temp = Date & 0x0F;
-                        LCD_Nprint(&temp,1,5);
-                        temp = (Date & 0xF0)>>4;
-                        LCD_Nprint(&temp,1,4);
-                                                
-                        temp = Month & 0x0F;
-                        LCD_Nprint(&temp,1,9);
-                        temp = (Month & 0xF0)>>4;
-                        LCD_Nprint(&temp,1,8);
+                              temp = Seg & 0x0F;  
+                              LCD_Nprint(&temp,0,13);
+                              temp = (Seg & 0xF0)>>4;
+                              LCD_Nprint(&temp,0,12);
+                  
+                              temp = Date & 0x0F;
+                              LCD_Nprint(&temp,1,5);
+                              temp = (Date & 0xF0)>>4;
+                              LCD_Nprint(&temp,1,4);
+                                                      
+                              temp = Month & 0x0F;
+                              LCD_Nprint(&temp,1,9);
+                              temp = (Month & 0xF0)>>4;
+                              LCD_Nprint(&temp,1,8);
 
-                        temp = Year & 0x0F;
-                        LCD_Nprint(&temp,1,13);
-                        temp = (Year & 0xF0)>>4;
-                        LCD_Nprint(&temp,1,12);
+                              temp = Year & 0x0F;
+                              LCD_Nprint(&temp,1,13);
+                              temp = (Year & 0xF0)>>4;
+                              LCD_Nprint(&temp,1,12);
 
-                        
-
-
-                  break;    
-      
-            }
+                        break;    
+            
+                  }
+            }  
+            
+            
             // LCD_Nprint(&cuenta2,0,1);
             // LCD_Nprint(&cuenta,0,11);
             
@@ -475,7 +525,8 @@ void inittask (void)
 
 
       //Inicializacion de I2C
-      I2C_DS1307W(); //Inicializa el DS1307
+      I2C_init(); //Configuración I2C
+      //I2C_DS1307W(); //Inicializa el DS1307
 
 
 }
