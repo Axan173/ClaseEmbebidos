@@ -231,8 +231,7 @@ void Periodo(int t_useg)   //Per�odo de la se�al
      PR2=(t_useg-1);
 }
 
-
-
+volatile unsigned char BORRAR_DISPLAY[]={"               \n"};
 void displayControl(char tecla)
 {
     char TEXTO3 []={" Menu: \n"};
@@ -277,19 +276,25 @@ void displayControl(char tecla)
     }
     else if(refreshRate == 2 && displayStateMachine == 2)
     {
-            //LCD_Sprint(&TEXTO4,0,0);
-            //LCD_Sprint(&TEXTO5,1,0);
             
-            //LCD_Sprint(&TEXTO3,1,1);
+            //Borrar Display
+            LCD_Sprint(&BORRAR_DISPLAY,0,0);
+            LCD_Sprint(&BORRAR_DISPLAY,1,0);
             switch (tecla)
             {
                   case 1:
                         LCD_Nprint(&cuenta,0,1);
+                  break;
+                  case 2:
+                        LCD_Nprint(&cuenta,0,8);
+                  break;
+                  case 3:
+                        LCD_Nprint(&cuenta2,1,0);
                   break;      
                   
                   default:
                         
-                        LCD_Nprint(&cuenta2,1,1);
+                        LCD_Nprint(&cuenta2,1,8);
                   break;    
       
             }
