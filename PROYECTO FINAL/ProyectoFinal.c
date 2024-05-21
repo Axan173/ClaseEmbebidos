@@ -257,7 +257,8 @@ void Periodo(int t_useg)   //Per�odo de la se�al
      PR2=(t_useg-1);
 }
 
-volatile unsigned char BORRAR_DISPLAY[]={"               \n"};
+const unsigned char BORRAR_DISPLAY[]=  {"               \n"};
+const unsigned char TEMPERATURA_STR[]= {" TEMPERATURA ES\n"};
 void displayControl(char tecla)
 {
     char TEXTO3 []={" Menu: \n"};
@@ -306,13 +307,16 @@ void displayControl(char tecla)
             //Borrar Display
             LCD_Sprint(&BORRAR_DISPLAY,0,0);
             LCD_Sprint(&BORRAR_DISPLAY,1,0);
+            
             switch (tecla)
             {
                   case 1:
                         LCD_Nprint(&cuenta,0,1);
                   break;
                   case 2:
-                        LCD_Nprint(&temperatura,0,8);
+                        LCD_Sprint(&TEMPERATURA_STR,0,0);
+                        temperatura = (unsigned int)((temperatura*5*100)/1024)+8;
+                        LCD_Nprint(&temperatura,1,8);
                   break;
                   case 3:
                         LCD_Nprint(&cuenta2,1,0);
