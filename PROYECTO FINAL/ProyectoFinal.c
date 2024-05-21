@@ -19,14 +19,40 @@ unsigned char TDay  = 0x00;
 
 void ADCConversionLDR(void)
 {
-      ADCON0.GO_DONE=1; //Inicio de Conversi�n
-      while(ADCON0.GO_DONE){}; //TODO quitar esta basura :)
 
-      cuenta = ((ADRESH&0x3)<<8) | (ADRESL&0x00FF);
-      if (cuenta > 999) {
-          cuenta = 999;
+      static unsigned char alternarADCChannel =0;
+
+      if(alternarADCChannel == 0)
+      {
+            ADCON0.ADON=0; //Apagado del ADC.
+            ADCON0.CHS0=0; //Selecci�n del canal 0
+            ADCON0.ADON=1; //Encendido del ADC.
+
+            ADCON0.GO_DONE=1; //Inicio de Conversi�n
+            while(ADCON0.GO_DONE){}; //TODO quitar esta basura :)
+
+            cuenta = ((ADRESH&0x3)<<8) | (ADRESL&0x00FF);
+            if (cuenta > 999) {
+            cuenta = 999;
+            }
+            
+            
+            alternarADCChannel = 1;
       }
+      else
+      {
+            ADCON0.ADON=0; //Apagado del ADC.
+            ADCON0.CHS0=1; //Selecci�n del canal 0
+            ADCON0.ADON=1; //Encendido del ADC.
 
+            ADCON0.GO_DONE=1; //Inicio de Conversi�n
+            while(ADCON0.GO_DONE){}; //TODO quitar esta basura :)
+
+            temperatura = ((ADRESH&0x3)<<8) | (ADRESL&0x00FF);
+            
+            
+            alternarADCChannel = 0;
+      }
 
 }
 
@@ -286,7 +312,7 @@ void displayControl(char tecla)
                         LCD_Nprint(&cuenta,0,1);
                   break;
                   case 2:
-                        LCD_Nprint(&cuenta,0,8);
+                        LCD_Nprint(&temperatura,0,8);
                   break;
                   case 3:
                         LCD_Nprint(&cuenta2,1,0);
@@ -346,6 +372,9 @@ void inittask (void)
 
       TRISA.RA0=1; //Bit 0 del Puerto A como entrada 
       ANSEL.RA0=1; //Bit O del Puerto A como entrada analoga.
+
+      TRISA.RA1=1; //Bit 1 del Puerto A como entrada
+      ANSEL.RA1=1; //Bit 1 del Puerto A como entrada analoga.
       
       ADCON0.ADCS1=1; //Selecci�n del Oscilador Interno FRC
       ADCON0.ADCS0=1;             //Selecci�n del canal 0 de forma predeterminada
