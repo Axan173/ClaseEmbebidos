@@ -10,8 +10,8 @@ volatile char OSTaskEnable = 0;
 unsigned char Seg   = 0x50; 
 unsigned char Min   = 0x59; 
 unsigned char Hour  = 0x23; 
-unsigned char Day   = 0x22; 
-unsigned char Date  = 0x28; 
+unsigned char Day   = 0x03; 
+unsigned char Date  = 0x22; 
 unsigned char Month = 0x05; 
 unsigned char Year  = 0x24; 
 unsigned char TDay  = 0x00;
@@ -257,13 +257,13 @@ void Periodo(int t_useg)   //Per�odo de la se�al
      PR2=(t_useg-1);
 }
 
-const unsigned char BORRAR_DISPLAY[]=  {"               \n"};
-const unsigned char TEMPERATURA_STR[]= {" TEMPERATURA ES\n"};
+const unsigned char BORRAR_DISPLAY[]=     {"               \n"};
+const unsigned char TEMPERATURA_STR[]=    {" TEMPERATURA ES\n"};
+const unsigned char HORA_STR[]=           {"HOUR           \n"};
+const unsigned char FECHA_STR[]=          {"DATE           \n"};
 void displayControl(char tecla)
 {
-    char TEXTO3 []={" Menu: \n"};
-    char TEXTO4 []={" Pulsa Para \n"}; 
-    char TEXTO5 []={" Continuar \n"};  
+    volatile unsigned int temp = 0;
 
     volatile static int refreshRate = 0;
     volatile static unsigned char displayStateMachine = 0;
@@ -323,8 +323,42 @@ void displayControl(char tecla)
                   break;      
                   
                   default:
+                        LCD_Sprint(&HORA_STR,0,0);
+                        LCD_Sprint(&FECHA_STR,1,0);
                         
-                        LCD_Nprint(&cuenta2,1,8);
+                        temp = Hour & 0x0F;  
+                        LCD_Nprint(&temp,0,5);
+                        temp = (Hour & 0xF0)>>4;
+                        LCD_Nprint(&temp,0,4);
+
+                        temp = Min & 0x0F;  
+                        LCD_Nprint(&temp,0,9);
+                        temp = (Min & 0xF0)>>4;
+                        LCD_Nprint(&temp,0,8);
+      
+                        temp = Seg & 0x0F;  
+                        LCD_Nprint(&temp,0,13);
+                        temp = (Seg & 0xF0)>>4;
+                        LCD_Nprint(&temp,0,12);
+            
+                        temp = Date & 0x0F;
+                        LCD_Nprint(&temp,1,5);
+                        temp = (Date & 0xF0)>>4;
+                        LCD_Nprint(&temp,1,4);
+                                                
+                        temp = Month & 0x0F;
+                        LCD_Nprint(&temp,1,9);
+                        temp = (Month & 0xF0)>>4;
+                        LCD_Nprint(&temp,1,8);
+
+                        temp = Year & 0x0F;
+                        LCD_Nprint(&temp,1,13);
+                        temp = (Year & 0xF0)>>4;
+                        LCD_Nprint(&temp,1,12);
+
+                        
+
+
                   break;    
       
             }
