@@ -280,21 +280,21 @@ void LCD_Enable(unsigned char DB_){         //Se�al de Habilitaci�n
      myLCD_Bus_Data |= (1<<E);
      PORTC = myLCD_Bus_Data;
      PORTA = ((myLCD_Bus_Data) >> 2);
-     delay_ms(2);
+     delay_us(200);
      myLCD_Bus_Data &=~((1<<E));
      PORTC = myLCD_Bus_Data;
      PORTA = ((myLCD_Bus_Data) >> 2);
-     delay_ms(2);
+     delay_us(200);
 #ifndef L_8Bits
      myLCD_Bus_Data=(DB_&0x0F)<<4|(myLCD_Bus_Data&0x0F);
      myLCD_Bus_Data|=(1<<E);
      PORTC = myLCD_Bus_Data;
      PORTA = ((myLCD_Bus_Data) >> 2);
-     delay_ms(1);
+     delay_us(100);
      myLCD_Bus_Data&=~(1<<E);
      PORTC = myLCD_Bus_Data;
      PORTA = ((myLCD_Bus_Data) >> 2);
-     delay_ms(1);
+     delay_us(100);
 #endif
 }
 
