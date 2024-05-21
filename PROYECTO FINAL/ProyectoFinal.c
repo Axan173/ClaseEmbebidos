@@ -257,10 +257,10 @@ void Periodo(int t_useg)   //Per�odo de la se�al
      PR2=(t_useg-1);
 }
 
-const unsigned char BORRAR_DISPLAY[]=     {"               \n"};
-const unsigned char TEMPERATURA_STR[]=    {" TEMPERATURA ES\n"};
-const unsigned char HORA_STR[]=           {"HOUR           \n"};
-const unsigned char FECHA_STR[]=          {"DATE           \n"};
+const unsigned char BORRAR_DISPLAY[]=     {"                \n"};
+const unsigned char TEMPERATURA_STR[]=    {" TEMPERATURA ES \n"};
+const unsigned char HORA_STR[]=           {"HOUR            \n"};
+const unsigned char FECHA_STR[]=          {"DATE            \n"};
 void displayControl(char tecla)
 {
     volatile unsigned int temp = 0;
